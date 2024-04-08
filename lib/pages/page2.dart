@@ -8,15 +8,12 @@ class page2 extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Center(
-      child: Scaffold(
-        appBar: AppBar(title: Text(pages[1].title)),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:[
-            Icon(pages[1].icon, size: 100,),
-            Text(pages[1].title, style: TextStyle(fontSize: 30)),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children:[
+          Icon(pages[1].icon, size: 100,),
+          Text(pages[1].title, style: TextStyle(fontSize: 30)),
+        ],
       ),
     );
   }

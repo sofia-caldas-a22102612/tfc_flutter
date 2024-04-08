@@ -8,16 +8,13 @@ class page1 extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Center(
-      child: Scaffold(
-        appBar: AppBar(title: Text(pages[0].title)),
-        body: Column(
+      child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children:[
             Icon(pages[0].icon, size: 100,),
             Text(pages[0].title, style: TextStyle(fontSize: 30)),
           ],
         ),
-      ),
-    );
+      );
   }
 }
