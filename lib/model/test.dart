@@ -21,7 +21,7 @@ class Test {
     this.resultDate,
     this.result,
     this.testLocation,
-    //this.patient,
+    this.patient,
     //this.user,
   });
 
@@ -35,7 +35,7 @@ class Test {
       result: json['result'],
       testLocation: json['test_location'],
       // Assuming Patient and User classes are already defined and have appropriate constructors
-      //patient: Patient.fromJson(json['patient']),
+      //patient: Patient.fromJson(json['Utente_ID']),
       //user: User.fromJson(json['user']),
     );
   }

@@ -1,59 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaEditarDiagnostico.dart';
-import 'package:tfc_flutter/patientPages/states/paginaFinished.dart';
-import 'package:tfc_flutter/patientPages/states/NED/paginaNED.dart';
-import 'package:tfc_flutter/patientPages/states/paginaPosTratamento.dart';
+import 'package:provider/provider.dart';
+import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaTesteDIagnosticoPositivo.dart';
-import 'package:tfc_flutter/patientPages/states/paginaTratamento.dart';
+import 'package:tfc_flutter/patientPages/states/NED/paginaNED.dart';
+import 'package:tfc_flutter/patientPages/states/Tratamento/paginaTratamento.dart';
+import '../repository/appatite_repository.dart';
 
-class PatientStatePage extends StatefulWidget {
-  final Patient patient;
-
-  PatientStatePage({Key? key, required this.patient}) : super(key: key);
-
-  @override
-  State<PatientStatePage> createState() => _PatientStatePageState();
-}
-
-class _PatientStatePageState extends State<PatientStatePage> {
+class PatientStatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Widget selectedPage;
+    return _buildPatientStatePage(context);
+  }
 
-    switch (widget.patient.getPatientState()) {
-      case PatientStatus.NED:
-        selectedPage = PaginaNED(patient: widget.patient);
-        break;
-      case PatientStatus.POSITIVE_DIAGNOSIS:
-        selectedPage = PaginaEditarDiagnostico(patient: widget.patient);
-        break;
-      case PatientStatus.TREATMENT:
-        selectedPage = PaginaTratamento(patient: widget.patient);
-        break;
-      case PatientStatus.FINISHED:
-        selectedPage = PaginaFinished(patient: widget.patient);
-        break;
-      case PatientStatus.POST_TREATMENT_ANALYSIS:
-        selectedPage = PaginaPosTratamento(patient: widget.patient);
-        break;
-      case PatientStatus.POSITIVE_SCREENING_DIAGNOSIS:
-      // TODO: Handle this case.
-        selectedPage = Placeholder(); // Placeholder until handling is implemented
-        break;
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${widget.patient.getName()}, ${widget.patient.getAge()}'),
-          ],
-        ),
-      ),
-      body: selectedPage,
-      // No need for bottomNavigationBar
+  Widget _buildPatientStatePage(BuildContext context) {
+    return FutureBuilder<Widget>(
+      future: _getPatientState(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return snapshot.data ?? SizedBox();
+        }
+      },
     );
   }
+
+  Future<Widget> _getPatientState(BuildContext context) async {
+    final session = context.watch<Session>();
+    final appatiteRepo = AppatiteRepository();
+    final patient = session.patient;
+    final user = session.user;
+
+    if (user == null || patient == null) {
+      return SizedBox();
+    }
+
+    switch (appatiteRepo.getPatientState(user, patient)) {
+      case 'NED':
+        return PaginaNED();
+      case 'POSITIVE_SCREENING_DIAGNOSIS':
+        return PaginaTesteDiagnosticoPositivo();
+      case 'POSITIVE_DIAGNOSIS':
+        return PaginaTesteDiagnosticoPositivo();
+      case 'TREATMENT':
+        return PaginaTratamento();
+      case 'POST_TREATMENT_ANALYSIS':
+        return PaginaTratamento();
+      case 'FINISHED':
+        return PaginaNED();
+      default:
+        throw Exception('Invalid patient status');
+    }
+  }
 }
+
+
+//todo isto é uma boa prática?

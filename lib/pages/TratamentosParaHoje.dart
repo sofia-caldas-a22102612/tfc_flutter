@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 
+import '../model/session.dart';
+
 class TratamentosParaHoje extends StatefulWidget {
   const TratamentosParaHoje({Key? key});
 
@@ -14,11 +16,13 @@ class TratamentosParaHoje extends StatefulWidget {
 class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
   @override
   Widget build(BuildContext context) {
+    final session = context.watch<Session>();
+    var user = session.user;
     var appatiteRepository = context.read<AppatiteRepository>();
 
     return Scaffold(
       body: FutureBuilder(
-        future: appatiteRepository.fetchPatientsDaily(),
+        future: appatiteRepository.fetchPatientsDaily(user!),
         builder: (_, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
@@ -33,10 +37,12 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
                     child: ListView.separated(
                       itemBuilder: (_, index) => GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                         session.patient = patients[index];
+                          //todo fazer update do patient na classe sessao
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MainPatientPage(patient: patients[index]),
+                              builder: (context) => MainPatientPage(),
                             ),
                           );
                         },

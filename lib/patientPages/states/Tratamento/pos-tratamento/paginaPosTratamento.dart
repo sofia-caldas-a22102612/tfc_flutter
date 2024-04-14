@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
+import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/patientPages/patientPages.dart';
 
-class PaginaFinished extends StatelessWidget {
-  final Patient patient;
-
-  // Constructor with required patient parameter
-  const PaginaFinished({Key? key, required this.patient}) : super(key: key);
+class PaginaPosTratamento extends StatelessWidget {
+  const PaginaPosTratamento({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Call PatientPages function with the patient parameter to get the list of pages
-    List<Map<String, dynamic>> patientPages = PatientPages(patient);
+    final session = context.watch<Session>();
+    Patient? patient = session.patient;
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            patientPages[2]['title'] as String, // Access the title from the list
+            'title' as String, // todo redo this page
             style: TextStyle(fontSize: 30),
           ), // Display the title with a larger font size
         ],

@@ -31,23 +31,4 @@ class ZeusRepository {
     }
   }
 
-  Future<List<Patient>> searchPatientsTest(String patientName) async {
-    // Dummy basic auth for testing purposes
-    final basicAuth = 'dummyBasicAuth';
-
-    Response response = await get(
-      Uri.parse("$_endpoint/search?nome=$patientName"),
-      headers: {'Authorization': 'Basic $basicAuth'},
-    );
-    if (response.statusCode == 200) {
-      Map result = jsonDecode(response.body);
-      List<Map<String, dynamic>> utentesJson = result['message'];
-      return utentesJson.map((utenteJSON) => Patient.fromJSON(utenteJSON)).toList();
-    } else if (response.statusCode == 401) {
-      throw AuthenticationException();
-    } else {
-      throw Exception("${response.statusCode} ${response.reasonPhrase}");
-    }
-  }
-
 }

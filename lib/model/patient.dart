@@ -1,7 +1,9 @@
+import 'dart:collection';
+
 import 'package:tfc_flutter/model/gender_type.dart';
-import 'package:tfc_flutter/model/test.dart';
+import 'package:tfc_flutter/model/test.dart' as TestModel; // Import the Test class with a prefix
+import 'package:tfc_flutter/model/treatment.dart' as TreatmentModel; // Import the Treatment class with a prefix
 import 'package:tfc_flutter/model/treatment.dart';
-import 'package:tfc_flutter/model/rastreio.dart';
 
 enum PatientStatus {
   NED,
@@ -24,9 +26,10 @@ class Patient {
   String? _lastProgramName;
   DateTime? _lastProgramDate;
   int _userId;
-  Rastreio? _lastScreening; // Assuming Test is a valid class representing the last screening
+  Test? _lastScreening; // Assuming Test is a valid class representing the last screening
   PatientStatus _patientStatus;
-  List<Treatment>? _treatmentList;
+  List<TreatmentModel.Treatment>? _treatmentList; // Use the prefix for the Treatment class
+  HashSet<TestModel.Test>? _testList; // Use the prefix for the Test class
 
   Patient(
       this._id,
@@ -43,6 +46,31 @@ class Patient {
       this._lastScreening,
       this._patientStatus,
       );
+
+  void updatePatientState(PatientStatus status){
+    this._patientStatus = status;
+  }
+
+  void addRastreio(Test rastreio){
+    this._lastScreening = rastreio;
+  }
+
+  void addTest(Test newTest) {
+    if (_testList == null) {
+      _testList = HashSet<Test>() as HashSet<TestModel.Test>?; // Initialize the _testList if it's null
+    }
+
+    // Check if newTest already exists in the _testList
+    bool alreadyExists = _testList!.contains(newTest);
+
+    if (alreadyExists) {
+      // If newTest already exists, update it
+      _testList!.add(newTest as TestModel.Test);    // Add the new test
+    } else {
+      // If newTest doesn't exist, add it to the _testList
+      _testList!.add(newTest as TestModel.Test);
+    }
+  }
 
   // Getter method for name
   String getName() {
@@ -99,7 +127,7 @@ class Patient {
   }
 
   // Getter method for lastScreening
-  Rastreio? getLastScreening() {
+  Test? getLastScreening() {
     return _lastScreening;
   }
 
@@ -143,11 +171,14 @@ class Patient {
       json['last_program_name'],
       DateTime.parse(json['last_program_date']),
       json['id_user'],
-      Rastreio.fromJson(json['last_screening']),
+      TestModel.Test.fromJson(json['last_screening']) as TreatmentModel.Test?,
       json['state'],
     );
   }
 
-  static fromJson(json) {}
+
+
+
+
 
 }

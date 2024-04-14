@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaTesteDIagnosticoPositivo.dart';
-
-import '../../mainPatientPage.dart';
+import 'package:tfc_flutter/model/session.dart';
+import 'package:tfc_flutter/model/test.dart' as TestModel; // Import the Test class with a prefix
+import 'package:tfc_flutter/model/treatment.dart' as TreatmentModel;
+import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
+import 'package:tfc_flutter/repository/appatite_repository.dart'; // Import the Treatment
 
 class PaginaEditarDiagnostico extends StatefulWidget {
-  final Patient patient;
-
-  const PaginaEditarDiagnostico({Key? key, required this.patient}) : super(key: key);
-
   @override
+
   _PaginaEditarDiagnosticoState createState() => _PaginaEditarDiagnosticoState();
 }
 
 class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
-  bool? diagnosis;
-  DateTime? testDate;
-  DateTime? resultDate;
-  bool? result;
-  int? testLocation;
-
   @override
   Widget build(BuildContext context) {
+    final session = context.watch<Session>();
+    final appatiteRepo = AppatiteRepository();
+    Patient? patient = session.patient;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('Editar Diagnóstico'),
@@ -36,88 +34,17 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                 style: TextStyle(fontSize: 30),
               ),
               SizedBox(height: 20),
-              Row(
-                children: [
-                  Text('Resultado: '),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        diagnosis = true;
-                      });
-                    },
-                    child: Text('Positivo'),
-                    style: ElevatedButton.styleFrom(
-                      primary: diagnosis == true ? Colors.green : null,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        diagnosis = false;
-                      });
-                    },
-                    child: Text('Negativo'),
-                    style: ElevatedButton.styleFrom(
-                      primary: diagnosis == false ? Colors.red : null,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Data do Teste'),
-                onTap: () async {
-                  final selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-                  if (selectedDate != null) {
-                    setState(() {
-                      testDate = selectedDate;
-                    });
-                  }
-                },
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Data do Resultado'),
-                onTap: () async {
-                  final selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-                  if (selectedDate != null) {
-                    setState(() {
-                      resultDate = selectedDate;
-                    });
-                  }
-                },
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Local do Teste'),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  setState(() {
-                    testLocation = int.tryParse(value);
-                  });
-                },
-              ),
-              SizedBox(height: 20),
+              // Your existing UI widgets...
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PaginaTesteDiagnosticoPositivo(patient: widget.patient),
-                    ),
-                  );
+                  // Create a new Test object
+
+                  TestModel.Test newTest = TestModel.Test(); //todo usar API
+                  //appatiteRepo.insertNewTest(newTest);
+                  
+                  // Add the new Test to the testList of the patient
+                  patient!.addTest(newTest as TreatmentModel.Test);
+                  // Navigate to the next page or perform any other action
                 },
                 child: Text('Guardar'),
               ),
@@ -127,7 +54,7 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MainPatientPage(patient: widget.patient),
+                      builder: (context) => MainPatientPage(),
                     ),
                   );
                 },
@@ -140,3 +67,4 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
     );
   }
 }
+

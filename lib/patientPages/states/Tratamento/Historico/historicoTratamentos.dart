@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/treatment.dart' as patient_models;
 
+import '../../../../model/session.dart';
+
 
 class HistoricoTratamentos extends StatefulWidget {
-  final Patient patient;
 
-  const HistoricoTratamentos({Key? key, required this.patient}) : super(key: key);
+  const HistoricoTratamentos({super.key});
 
   @override
   _HistoricoTratamentosState createState() => _HistoricoTratamentosState();
@@ -17,8 +19,10 @@ class _HistoricoTratamentosState extends State<HistoricoTratamentos> {
 
   @override
   void initState() {
-    super.initState();
-    treatments = widget.patient.getTreatmentList();
+
+    final session = context.watch<Session>();
+    Patient? patient = session.patient;
+    treatments = patient!.getTreatmentList(); //todo use api
   }
 
   @override
