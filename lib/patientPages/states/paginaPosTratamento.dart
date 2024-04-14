@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
+import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/patientPages/states/rastreio/novoRastreio.dart';
 import '../patientPages.dart';
 
@@ -10,6 +12,10 @@ class PaginaPosTratamento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final session = context.watch<Session>();
+    Patient? patient = session.patient;
+
     return Scaffold( // Add Scaffold widget
       appBar: AppBar( // Add AppBar
         title: Text('Pos Tratamento'), // Set app bar title
@@ -31,7 +37,7 @@ class PaginaPosTratamento extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NovoRastreio(patient: patient),
+                    builder: (context) => NovoRastreio(),
                   ),
                 );
               },

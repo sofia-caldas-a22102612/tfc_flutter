@@ -1,116 +1,73 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/test.dart';
+import 'package:tfc_flutter/model/user.dart';
+
+class AuthenticationException implements Exception {}
 
 class AppatiteRepository {
-  static const String _baseUrl = 'https://example.com/api'; // Replace with your API base URL
+  final String? _endpoint = dotenv.env['APPATITEREPOSITORY_BASE_URL'];
 
-  Future<List> fetchPatientsDaily() async {
-    try {
-      final response = await http.get(Uri.parse('$_baseUrl/api/patient/activeTreatment'));
+  String _buildBasicAuth(String email, String password) =>
+      base64.encode(utf8.encode('$email:$password'));
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = json.decode(response.body);
-        final List<Patient> jsonList = jsonData['patients']; // Assuming 'patients' is the key containing the list of patient data
-        return jsonList.map((json) => Patient.fromJson(json)).toList();
-
-      } else {
-        throw Exception('Failed to fetch patients. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to fetch patients: $e');
+  Future<List<Patient>> fetchPatientsDaily(User sessionOwner) async {
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final Response response = await get(
+      Uri.parse("$_endpoint/api/patient/activeTreatment"),
+      headers: {'Authorization': 'Basic $basicAuth'},
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> result = jsonDecode(response.body)['message'];
+      return result.map((json) => Patient.fromJson(json)).toList();
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
 
-  static Future<List> searchPatients(String query) async {
-    try {
-      final response = await http.get(Uri.parse('$_baseUrl/patient/search/$query'));
+  Future<List<Patient>> insertNewTest(User sessionOwner, Test newTest) async {
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final Map<String, dynamic> requestBody = newTest.toJson();
 
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonList = json.decode(response.body);
-        return jsonList.map((json) => Patient.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to search patients. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to search patients: $e');
+    final Response response = await post(
+      Uri.parse("$_endpoint/new"),
+      headers: {
+        'Authorization': 'Basic $basicAuth',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> result = jsonDecode(response.body)['message'];
+      return result.map((json) => Patient.fromJson(json)).toList();
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
 
-  static Future<Patient> updatePatient(String patientId) async {
-    try {
-      final response = await http.put(
-        Uri.parse('$_baseUrl/patient/$patientId'), // Use the provided 'patientId' parameter
+  Future<PatientStatus> getPatientState(User sessionOwner, Patient patient) async {
+    final id = patient.getId().toString();
+    final Response response = await get(
+      Uri.parse("$_endpoint/state/$id"),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return PatientStatus.values.firstWhere(
+            (status) => status.toString() == data['message'],
+        orElse: () => throw Exception('Invalid patient state'),
       );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = json.decode(response.body);
-        return Patient.fromJson(jsonData); // Assuming server returns the updated patient object
-      } else {
-        throw Exception('Failed to update patient. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to update patient: $e');
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
-
-
-  Future<Test> addDiagnosisTest(int testId) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$_baseUrl/tests/new'),
-        body: json.encode({'testId': testId}), // Provide testId in the request body
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = json.decode(response.body);
-        return Test.fromJson(jsonData); // Assuming server returns a single test object
-      } else {
-        throw Exception('Failed to add test. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to add test: $e');
-    }
-  }
-
-
-  Future<Test> getTest(int testId) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/tests/$testId'), // Adjust URI to fetch test by ID
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = json.decode(response.body);
-        return Test.fromJson(jsonData); // Assuming server returns a single test object
-      } else {
-        throw Exception('Failed to get test. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to get test: $e');
-    }
-  }
-
-  Future<Test> updateTest(int testId) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/tests/$testId'), // Adjust URI to fetch test by ID
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = json.decode(response.body);
-        return Test.fromJson(jsonData); // Assuming server returns a single test object
-      } else {
-        throw Exception('Failed to get test. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to get test: $e');
-    }
-  }
-
-
-
-
 }

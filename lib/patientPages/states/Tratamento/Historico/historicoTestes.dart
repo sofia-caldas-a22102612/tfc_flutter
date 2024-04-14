@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/model/treatment.dart' as patient_models;
+import 'package:tfc_flutter/model/TreatmentModel/treatment.dart' as patient_models;
+
+import '../../../../model/session.dart';
 
 
-class HistoricoTratamentos extends StatefulWidget {
-  final Patient patient;
+class HistoricoTestes extends StatefulWidget {
 
-  const HistoricoTratamentos({Key? key, required this.patient}) : super(key: key);
+
+  const HistoricoTestes({super.key});
 
   @override
-  _HistoricoTratamentosState createState() => _HistoricoTratamentosState();
+  _HistoricoTestesState createState() => _HistoricoTestesState();
 }
 
-class _HistoricoTratamentosState extends State<HistoricoTratamentos> {
+class _HistoricoTestesState extends State<HistoricoTestes> {
   List<patient_models.Treatment>? treatments;
 
-  @override
-  void initState() {
-    super.initState();
-    treatments = widget.patient.getTreatmentList();
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    final session = context.watch<Session>();
+    Patient? patient = session.patient;
+
     if (treatments == null || treatments!.isEmpty) {
       return Scaffold(
         appBar: AppBar(

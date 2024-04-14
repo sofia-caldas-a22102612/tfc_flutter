@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/pages/pages.dart';
 import 'package:tfc_flutter/repository/zeus_repository.dart';
-
+import '../model/session.dart';
 import '../patientPages/mainPatientPage.dart';
 
 class PesquisarUtente extends StatelessWidget {
@@ -12,7 +11,8 @@ class PesquisarUtente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var zeusRepository = context.read<ZeusRepository>();
-
+    final session = context.watch<Session>();
+    final user = session.user;
     // Declare a TextEditingController to handle user input
     TextEditingController searchController = TextEditingController();
 
@@ -40,7 +40,7 @@ class PesquisarUtente extends StatelessWidget {
                             width: double.maxFinite,
                             height: 300, // Set a fixed height for the list
                             child: FutureBuilder(
-                              future: zeusRepository.searchPatientsTest(searchController.text), // Pass user input to searchPatients
+                              future: zeusRepository.searchPatients(user!, searchController.text), // Pass user input to searchPatients
                               builder: (BuildContext context, AsyncSnapshot<List<Patient>> snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
                                   return CircularProgressIndicator(); // Show a loading indicator while fetching data
@@ -74,11 +74,12 @@ class PesquisarUtente extends StatelessWidget {
                                         return ListTile(
                                           title: Text(snapshot.data![index].getName()), // Replace with patient name
                                           onTap: () {
+                                            session.patient = snapshot.data![index];
                                             // Navigate to the Patient page
-                                            Navigator.push(
+                                            Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => MainPatientPage(patient: snapshot.data![index]),
+                                                builder: (context) => MainPatientPage(),
                                               ),
                                             );
                                           },

@@ -19,7 +19,7 @@ class FakeZeusRepository extends ZeusRepository {
           DateTime.parse("1996-01-01"), // _birthDate
           GenderType.male, // _genre
           25, // _age
-          null, // _realId
+          '1234', // _realId
           null, // _documentType
           null, // _lastProgramName
           null, // _lastProgramDate
@@ -35,7 +35,7 @@ class FakeZeusRepository extends ZeusRepository {
     DateTime.parse("1990-05-15"), // _birthDate
     GenderType.female, // _gender
     32, // _age
-    456, // _realId
+    '456', // _realId
     789, // _documentType
     'last program name', // _lastProgramName
     DateTime.parse("2022-03-25"), // _lastProgramDate
@@ -50,54 +50,6 @@ class FakeZeusRepository extends ZeusRepository {
     }
   }
 
-  Future<List<Patient>> searchPatientsTest(String patientName) async {
-    final List<Patient> patients = [
-      Patient(
-        '123', // _id
-        'Maria', // _name
-        '123456789', // _cc
-        DateTime.parse("1996-01-01"), // _birthDate
-        GenderType.male, // _genre
-        25, // _age
-        null, // _realId
-        null, // _documentType
-        null, // _lastProgramName
-        null, // _lastProgramDate
-        1, // _userId
-        null, // _lastScreening
-        PatientStatus.NED,
-      ),
-      Patient(
-        '12234', // _id
-        'Joao', // _name
-        '987654321', // _cc
-        DateTime.parse("1990-05-15"), // _birthDate
-        GenderType.female, // _gender
-        32, // _age
-        456, // _realId
-        789, // _documentType
-        'last program name', // _lastProgramName
-        DateTime.parse("2022-03-25"), // _lastProgramDate
-        2, // _userId
-        null, // _lastScreening
-        PatientStatus.NED, // _state
-      ),
-    ];
-
-    // Filter patients based on matching ID or partially matching name
-    List<Patient> filteredPatients = patients.where((patient) {
-      // Check if the patientName contains only numbers
-      if (_containsOnlyNumbers(patientName)) {
-        // Search by ID
-        return patient.getId() == patientName;
-      } else {
-        // Search by partially matching name
-        return patient.getName().toLowerCase().contains(patientName.toLowerCase());
-      }
-    }).toList();
-
-    return filteredPatients;
-  }
 
 
 // Function to check if a string contains only numbers

@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
+import 'package:tfc_flutter/model/session.dart';
+import 'package:tfc_flutter/pages/main.page.dart';
 import 'package:tfc_flutter/patientPages/states/rastreio/novoRastreio.dart';
 
 import '../../patientPages.dart';
 
 
 class PaginaNED extends StatelessWidget {
-  final Patient patient;
 
   // Constructor with required patient parameter
-  const PaginaNED({Key? key, required this.patient}) : super(key: key);
+  const PaginaNED ({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Call PatientPages function with the patient parameter to get the list of pages
-    List<Map<String, dynamic>> patientPages = PatientPages(patient);
+    final session = context.watch<Session>();
+    Patient? patient = session.patient;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -22,7 +24,7 @@ class PaginaNED extends StatelessWidget {
         Center(
           child: Text(
             'Resultado do Último Rastreio: ' +
-                patient.getPatientPositiveScreening(),
+                patient!.getPatientPositiveScreening(),
             style: TextStyle(color: Colors.black26, fontSize: 30),
           ),
         ),
@@ -35,7 +37,7 @@ class PaginaNED extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NovoRastreio(patient: patient), // Navigate to the NovoRastreio page
+                  builder: (context) => MainPage(), // change PatientState
                 ),
               );
             },

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 
-class PatientDetailPage extends StatefulWidget {
-  final Patient patient; // Add a patient parameter
+import '../model/session.dart';
 
-  PatientDetailPage({Key? key, required this.patient}) : super(key: key);
+class PatientDetailPage extends StatefulWidget {
+
+  PatientDetailPage({super.key});
 
   @override
   State<PatientDetailPage> createState() => _PatientDetailPageState();
@@ -15,6 +17,8 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final session = context.watch<Session>();
+    Patient? patient = session.patient;
     return Scaffold(
       appBar: AppBar(
         title: Text('Patient Details'),
@@ -22,16 +26,16 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
-          _buildDetailItem('Name', widget.patient.getName()), // Accessing patient using widget.patient
-          _buildDetailItem('ID', widget.patient.getId()),
-          _buildDetailItem('CC', widget.patient.getCC()),
-          _buildDetailItem('Gender', widget.patient.getBirthdate().toString()),
-          _buildDetailItem('Age', widget.patient.getAge().toString()),
-          _buildDetailItem('Real ID', widget.patient.getRealId()?.toString() ?? 'N/A'),
-          _buildDetailItem('Document Type', widget.patient.getDocumentType()?.toString() ?? 'N/A'),
-          _buildDetailItem('Last Program Name', widget.patient.getLastProgramName() ?? 'N/A'),
-          _buildDetailItem('Last Program Date', widget.patient.getLastProgramDate()?.toString() ?? 'N/A'),
-          _buildDetailItem('User ID', widget.patient.getUserId().toString()),
+          _buildDetailItem('Name', patient!.getName()), // Accessing patient using widget.patient
+          _buildDetailItem('ID', patient.getId()),
+          _buildDetailItem('CC', patient.getCC()),
+          _buildDetailItem('Gender', patient.getBirthdate().toString()),
+          _buildDetailItem('Age', patient.getAge().toString()),
+          _buildDetailItem('Real ID', patient.getRealId()?.toString() ?? 'N/A'),
+          _buildDetailItem('Document Type', patient.getDocumentType()?.toString() ?? 'N/A'),
+          _buildDetailItem('Last Program Name', patient.getLastProgramName() ?? 'N/A'),
+          _buildDetailItem('Last Program Date', patient.getLastProgramDate()?.toString() ?? 'N/A'),
+          _buildDetailItem('User ID', patient.getUserId().toString()),
         ].expand((widget) => [widget, SizedBox(height: 8), Divider(), SizedBox(height: 8)]).toList(), // Add SizedBox for spacing
       ),
     );

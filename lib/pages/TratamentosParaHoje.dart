@@ -1,8 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
+
+import '../model/patient.dart';
+import '../model/session.dart';
 
 class TratamentosParaHoje extends StatefulWidget {
   const TratamentosParaHoje({Key? key});
@@ -14,16 +16,20 @@ class TratamentosParaHoje extends StatefulWidget {
 class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
   @override
   Widget build(BuildContext context) {
+    Session session = Provider.of<Session>(context, listen: false);
+    var user = session.user;
     var appatiteRepository = context.read<AppatiteRepository>();
 
     return Scaffold(
       body: FutureBuilder(
-        future: appatiteRepository.fetchPatientsDaily(),
+        future: appatiteRepository.fetchPatientsDaily(user!),
         builder: (_, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError || snapshot.data == null) {
+            return Center(child: Text('Error loading data'));
           } else {
-            var patients = snapshot.data!;
+            var patients = snapshot.data as List<Patient>; // Cast snapshot.data to List<Patient>
 
             return Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0), // Larger top padding
@@ -33,10 +39,11 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
                     child: ListView.separated(
                       itemBuilder: (_, index) => GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                          session.patient = patients[index];
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MainPatientPage(patient: patients[index]),
+                              builder: (context) => MainPatientPage(),
                             ),
                           );
                         },
@@ -60,9 +67,8 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
                                   builder: (BuildContext context) {
                                     return AlertDialog(
                                       title: Text('Confirmar Toma'),
-                                      content:  TextButton(
+                                      content: TextButton(
                                         onPressed: () {
-                                          // Add action for dark green button
                                           Navigator.pop(context); // Close the popup
                                         },
                                         child: Text(
@@ -80,7 +86,7 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
                                           onPressed: () {
                                             Navigator.pop(context); // Close the popup
                                           },
-                                          child:  Text(
+                                          child: Text(
                                             'Fechar',
                                             style: TextStyle(
                                               color: Colors.white, // White color
@@ -116,7 +122,5 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
         },
       ),
     );
-
-
   }
 }
