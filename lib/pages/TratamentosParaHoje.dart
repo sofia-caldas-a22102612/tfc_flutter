@@ -16,17 +16,20 @@ class TratamentosParaHoje extends StatefulWidget {
 class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
   @override
   Widget build(BuildContext context) {
-    Session session = Provider.of<Session>(context, listen: false);
+    final session = context.watch<Session>();
     var user = session.user;
     var appatiteRepository = context.read<AppatiteRepository>();
 
     return Scaffold(
-      body: FutureBuilder(
-        future: appatiteRepository.fetchPatientsDaily(user!),
+      body: user == null
+          ? Center(child: CircularProgressIndicator()) // Show loading indicator if user is null
+          : FutureBuilder(
+        future: appatiteRepository.fetchPatientsDaily(user),
         builder: (_, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError || snapshot.data == null) {
+            print(snapshot.error);
             return Center(child: Text('Error loading data'));
           } else {
             var patients = snapshot.data as List<Patient>; // Cast snapshot.data to List<Patient>
@@ -122,5 +125,6 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
         },
       ),
     );
+
   }
 }

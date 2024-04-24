@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:tfc_flutter/model/patient.dart';
-
 import 'user.dart';
 
 

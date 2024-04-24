@@ -17,7 +17,7 @@ final pages = [
     widget: PatientDetailPage(),
 ),
 (
-    title: 'Tratamento',
+    title: 'Histórico',
     icon: Icons.circle,
     widget: HistoricoTratamentos(),
 ),

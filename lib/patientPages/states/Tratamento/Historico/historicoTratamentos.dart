@@ -5,6 +5,8 @@ import 'package:tfc_flutter/model/TreatmentModel/treatment.dart' as patient_mode
 
 import '../../../../model/session.dart';
 
+import '../../../../model/session.dart';
+
 
 class HistoricoTratamentos extends StatefulWidget {
 

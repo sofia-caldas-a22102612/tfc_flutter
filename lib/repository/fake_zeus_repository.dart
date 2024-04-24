@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/repository/zeus_repository.dart';
 

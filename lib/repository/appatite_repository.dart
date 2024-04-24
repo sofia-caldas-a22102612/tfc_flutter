@@ -52,7 +52,7 @@ class AppatiteRepository {
     }
   }
 
-  Future<PatientStatus> getPatientState(User sessionOwner, Patient patient) async {
+  Future<String?> getPatientState(User sessionOwner, Patient patient) async {
     final id = patient.getId().toString();
     final Response response = await get(
       Uri.parse("$_endpoint/state/$id"),
@@ -60,14 +60,12 @@ class AppatiteRepository {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return PatientStatus.values.firstWhere(
-            (status) => status.toString() == data['message'],
-        orElse: () => throw Exception('Invalid patient state'),
-      );
+      return data['message'].toUpperCase();
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
 }

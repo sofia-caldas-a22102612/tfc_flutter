@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaTesteDIagnosticoPositivo.dart';
 import 'package:tfc_flutter/patientPages/states/NED/paginaNED.dart';
 import 'package:tfc_flutter/patientPages/states/Tratamento/paginaTratamento.dart';
+
+import '../model/session.dart';
 import '../repository/appatite_repository.dart';
 
 class PatientStatePage extends StatelessWidget {
@@ -13,7 +14,7 @@ class PatientStatePage extends StatelessWidget {
   }
 
   Widget _buildPatientStatePage(BuildContext context) {
-    return FutureBuilder<Widget>(
+    return FutureBuilder<String?>(
       future: _getPatientState(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -21,40 +22,37 @@ class PatientStatePage extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          return snapshot.data ?? SizedBox();
+          final patientState = snapshot.data;
+          switch (patientState) {
+            case 'NED':
+              return PaginaNED();
+            case 'POSITIVE_SCREENING_DIAGNOSIS':
+              return PaginaTesteDiagnosticoPositivo();
+            case 'POSITIVE_DIAGNOSIS':
+              return PaginaTesteDiagnosticoPositivo();
+            case 'TREATMENT':
+              return PaginaTratamento();
+            case 'POST_TREATMENT_ANALYSIS':
+              return PaginaTratamento();
+            case 'FINISHED':
+              return PaginaNED();
+            default:
+              throw Exception('Invalid patient status');
+          }
         }
       },
     );
   }
 
-  Future<Widget> _getPatientState(BuildContext context) async {
+  Future<String?> _getPatientState(BuildContext context) async {
     final session = context.watch<Session>();
-    final appatiteRepo = AppatiteRepository();
+    var appatiteRepository = context.read<AppatiteRepository>();
     final patient = session.patient;
     final user = session.user;
 
     if (user == null || patient == null) {
-      return SizedBox();
+      return 'NED';
     }
-
-    switch (appatiteRepo.getPatientState(user, patient)) {
-      case 'NED':
-        return PaginaNED();
-      case 'POSITIVE_SCREENING_DIAGNOSIS':
-        return PaginaTesteDiagnosticoPositivo();
-      case 'POSITIVE_DIAGNOSIS':
-        return PaginaTesteDiagnosticoPositivo();
-      case 'TREATMENT':
-        return PaginaTratamento();
-      case 'POST_TREATMENT_ANALYSIS':
-        return PaginaTratamento();
-      case 'FINISHED':
-        return PaginaNED();
-      default:
-        throw Exception('Invalid patient status');
-    }
+    return appatiteRepository.getPatientState(user, patient);
   }
 }
-
-
-//todo isto é uma boa prática?

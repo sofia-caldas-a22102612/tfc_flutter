@@ -31,6 +31,7 @@ class Patient {
   List<Treatment>? _treatmentList; // Use the prefix for the Treatment class
   HashSet<Test>? _testList; // Use the prefix for the Test class
 
+
   // Constructor 1: for Patient.withDetails
   Patient.withDetails(
       this._id,
@@ -68,28 +69,26 @@ class Patient {
 
 
   void updatePatientState(PatientStatus status) {
-    this._patientStatus = status;
+    _patientStatus = status;
   }
 
   void addRastreio(Test rastreio) {
-    this._lastScreening = rastreio;
+    _lastScreening = rastreio;
   }
 
   void addTest(Test newTest) {
-    if (_testList == null) {
-      _testList = HashSet<Test>() as HashSet<
-          Test>?; // Initialize the _testList if it's null
-    }
+    _testList ??= HashSet<Test>() as HashSet<
+          Test>?;
 
     // Check if newTest already exists in the _testList
     bool alreadyExists = _testList!.contains(newTest);
 
     if (alreadyExists) {
       // If newTest already exists, update it
-      _testList!.add(newTest as Test); // Add the new test
+      _testList!.add(newTest); // Add the new test
     } else {
       // If newTest doesn't exist, add it to the _testList
-      _testList!.add(newTest as Test);
+      _testList!.add(newTest);
     }
   }
 
@@ -161,17 +160,18 @@ class Patient {
     return _treatmentList!.last;
   }
 
-  PatientStatus? getPatientState() {
-    return _patientStatus;
+  String? getPatientState() {
+    return _patientStatus.toString();
   }
 
   String getPatientPositiveScreening() {
-    if (_lastScreening == true) {
-      return 'Rastreio Positivo';
-    }
     if (_lastScreening == null) {
       return 'Sem Rastreios';
     }
+    if (_lastScreening!.result == true) {
+      return 'Rastreio Positivo';
+    }
+
     else {
       return "Ultimo Rastreio Negativo";
     }

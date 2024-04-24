@@ -13,7 +13,19 @@ class Test {
 
   Test({
     this.id,
-    this.diagnosis,
+    this.diagnosis = true,
+    this.type,
+    this.testDate,
+    this.resultDate,
+    this.result,
+    this.testLocation,
+    this.patient,
+  });
+
+
+  Test.rastreio({
+    this.id,
+    this.diagnosis = false,
     this.type,
     this.testDate,
     this.resultDate,
@@ -47,5 +59,7 @@ class Test {
     data['patient'] = patient?.toJson();
     return data;
   }
+
+
 
 }
