@@ -16,7 +16,6 @@ class _MainPatientPageState extends State<MainPatientPage> {
   Widget build(BuildContext context) {
     //todo obter sessao a partir do provider e a seguir fazer sessao.patient = this.patient
     final session = context.watch<Session>();
-    final patient = session.patient;
     return Scaffold(
         appBar: AppBar(title: Text(pages[_selectedIndex].title),
           actions: [

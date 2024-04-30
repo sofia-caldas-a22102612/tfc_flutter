@@ -2,6 +2,7 @@ import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
+import '../model/TreatmentModel/treatment.dart';
 import '../model/patient.dart';
 import '../model/user.dart';
 
@@ -102,5 +103,9 @@ class FakeAppatiteRepository extends AppatiteRepository {
 
   Future<String?> getPatientState(User sessionOwner, Patient patient) async {
     return 'NED'; // Assuming getStatus() returns the patient state directly
+  }
+
+  Future<List<Treatment>?> getTreatmentList(User sessionOwner, Patient patient) async {
+    return null;
   }
 }

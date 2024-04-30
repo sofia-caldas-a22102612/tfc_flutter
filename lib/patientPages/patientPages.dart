@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tfc_flutter/patientPages/PatientDetailPage.dart';
 import 'package:tfc_flutter/patientPages/patientStatePage.dart';
-import 'package:tfc_flutter/patientPages/states/Tratamento/Historico/historicoTratamentos.dart';
+import 'package:tfc_flutter/patientPages/states/Historico/historicoMain.dart';
 import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaTesteDIagnosticoPositivo.dart';
 
 
@@ -19,7 +19,7 @@ final pages = [
 (
     title: 'Histórico',
     icon: Icons.circle,
-    widget: HistoricoTratamentos(),
+    widget: HistoricoMain(),
 ),
 (
     title: 'Voltar ao Menu Principal',

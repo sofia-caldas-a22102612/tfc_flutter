@@ -4,6 +4,8 @@ import 'package:http/http.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/model/user.dart';
+import 'package:http/http.dart' as http;
+import '../model/TreatmentModel/treatment.dart';
 
 class AuthenticationException implements Exception {}
 
@@ -67,5 +69,26 @@ class AppatiteRepository {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
+
+  Future<List<Treatment>?> getTreatmentList(User sessionOwner, Patient patient) async {
+    final String id = patient.getId().toString();
+    final String baseUrl = '$_endpoint/state/$id';
+
+    try {
+      final response = await http.get(Uri.parse(baseUrl));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return data['message'].toUpperCase();
+      } else if (response.statusCode == 401) {
+        throw AuthenticationException();
+      } else {
+        throw Exception("${response.statusCode} ${response.reasonPhrase}");
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
+  }
+
 
 }
