@@ -108,4 +108,15 @@ class FakeAppatiteRepository extends AppatiteRepository {
   Future<List<Treatment>?> getTreatmentList(User sessionOwner, Patient patient) async {
     return null;
   }
+
+
+  Future<List<String>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
+    List<String> history = [
+      'History item 1',
+      'History item 2',
+      'History item 3',
+    ];
+    return history;
+  }
+
 }

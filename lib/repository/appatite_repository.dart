@@ -91,4 +91,23 @@ class AppatiteRepository {
   }
 
 
+  Future<List<String>?> getHistoryByDateTime(User sessionOwner, Patient patient) async {
+    final String id = patient.getId().toString();
+    final String baseUrl = '$_endpoint/state/$id';
+
+    try {
+      final response = await http.get(Uri.parse(baseUrl));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return data['message'].toUpperCase();
+      } else if (response.statusCode == 401) {
+        throw AuthenticationException();
+      } else {
+        throw Exception("${response.statusCode} ${response.reasonPhrase}");
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
+  }
+
 }
