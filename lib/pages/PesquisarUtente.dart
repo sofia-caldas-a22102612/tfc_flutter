@@ -76,11 +76,8 @@ class PesquisarUtente extends StatelessWidget {
                                           onTap: () {
                                             session.patient = snapshot.data![index];
                                             // Navigate to the Patient page
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => MainPatientPage(),
-                                              ),
+                                            Navigator.of(context).pushAndRemoveUntil(
+                                              MaterialPageRoute(builder: (context) => MainPatientPage()), (_) => false,
                                             );
                                           },
                                         );

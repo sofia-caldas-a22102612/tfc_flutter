@@ -12,18 +12,18 @@ final pages = [
     widget: PatientStatePage(),
 ),
 (
-    title: 'Informação do Utente',
-    icon: Icons.plus_one,
-    widget: PatientDetailPage(),
-),
-(
     title: 'Histórico',
-    icon: Icons.circle,
+    icon: Icons.list,
     widget: HistoricoMain(),
 ),
+    (
+    title: 'Dados Utente',
+    icon: Icons.person,
+    widget: PatientDetailPage(),
+    ),
 (
-    title: 'Voltar ao Menu Principal',
-    icon: Icons.mark_as_unread,
+    title: 'Voltar',
+    icon: Icons.settings_backup_restore,
     widget: PaginaTesteDiagnosticoPositivo(),
 ),
 ];

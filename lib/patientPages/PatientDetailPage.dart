@@ -20,9 +20,6 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
     final session = context.watch<Session>();
     Patient? patient = session.patient;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Patient Details'),
-      ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
