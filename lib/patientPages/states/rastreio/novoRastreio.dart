@@ -164,6 +164,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                         builder: (context) => PaginaEditarDiagnostico(),
                       ),
                     );
+
                   } else {
                     Navigator.pop(context);
                   }
