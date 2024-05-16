@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart' as TestModel;
@@ -16,40 +17,18 @@ class NovoRastreio extends StatefulWidget {
 }
 
 class _NovoRastreioState extends State<NovoRastreio> {
-  bool? diagnosis;
-  DateTime? testDate;
-  DateTime? resultDate;
+  final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   bool? result;
-  int? testLocation; // Change type to int
-  final List<int> testLocationOptions = [1, 2]; // Define options
-  Color positiveButtonColor = Colors.transparent; // Initial color of positive button
-  Color negativeButtonColor = Colors.transparent; // Initial color of negative button
-
-  Future<void> _selectDate(BuildContext context, bool isTestDate) async {
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        if (isTestDate) {
-          testDate = pickedDate;
-          diagnosis = false;
-        } else {
-          resultDate = pickedDate;
-        }
-      });
-    }
-  }
+  Color positiveButtonColor = Colors.transparent;
+  Color negativeButtonColor = Colors.transparent;
 
   @override
   Widget build(BuildContext context) {
     final session = context.watch<Session>();
     final appatiteRepo = AppatiteRepository();
-    Patient? patient = session.patient;
-    User? user = session.user;
+    final patient = session.patient;
+    final user = session.user;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Novo Rastreio'),
@@ -57,135 +36,150 @@ class _NovoRastreioState extends State<NovoRastreio> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Teste Rastreio',
-                style: TextStyle(fontSize: 30),
-              ),
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: () => _selectDate(context, true),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.calendar_today),
-                      SizedBox(width: 10),
-                      Text(
-                        'Test Date: ${testDate != null ? testDate!.toString().split(' ')[0] : "Select a date"}',
-                      ),
-                    ],
+          child: FormBuilder(
+            key: _fbKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Teste Rastreio',
+                  style: TextStyle(fontSize: 30),
+                ),
+                SizedBox(height: 40),
+                SizedBox(
+                  height: 60, // Adjust the height as needed
+                  child: FormBuilderDateTimePicker(
+                    name: 'testDate',
+                    inputType: InputType.date,
+                    decoration: InputDecoration(
+                      labelText: 'Test Date',
+                      prefixIcon: Icon(Icons.calendar_today),
+                    ),
+                    onChanged: (DateTime? value) {
+                      // Handle changes if needed
+                    },
+                    //todo add validator
                   ),
                 ),
-              ),
-              SizedBox(height: 10),
-              GestureDetector(
-                onTap: () => _selectDate(context, false),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.calendar_today),
-                      SizedBox(width: 10),
-                      Text(
-                        'Result Date: ${resultDate != null ? resultDate!.toString().split(' ')[0] : "Select a date"}',
-                      ),
-                    ],
+
+                SizedBox(height: 40), // Add spacing here
+
+                SizedBox(
+                  height: 60, // Adjust the height as needed
+                  child: FormBuilderDateTimePicker(
+                    name: 'resultDate',
+                    inputType: InputType.date,
+                    decoration: InputDecoration(
+                      labelText: 'Result Date',
+                      prefixIcon: Icon(Icons.calendar_today),
+                    ),
+                    onChanged: (DateTime? value) {
+                      // Handle changes if needed
+                    },
+                    //todo add validator
                   ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Result',
-                style: TextStyle(fontSize: 19),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        result = true;
-                        positiveButtonColor = Colors.green; // Change color to green when selected
-                        negativeButtonColor = Colors.transparent; // Reset color of negative button
-                      });
-                    },
-                    child: Text('Positive'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: positiveButtonColor, // Apply color based on state
+
+                SizedBox(height: 40), // Add spacing here
+
+                Text(
+                  'Result',
+                  style: TextStyle(fontSize: 19),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          result = true;
+                          positiveButtonColor = Colors.green;
+                          negativeButtonColor = Colors.transparent;
+                        });
+                      },
+                      child: Text('Positive'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: positiveButtonColor,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        result = false;
-                        negativeButtonColor = Colors.red; // Change color to red when selected
-                        positiveButtonColor = Colors.transparent; // Reset color of positive button
-                      });
-                    },
-                    child: Text('Negative'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: negativeButtonColor, // Apply color based on state
+                    SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          result = false;
+                          negativeButtonColor = Colors.red;
+                          positiveButtonColor = Colors.transparent;
+                        });
+                      },
+                      child: Text('Negative'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: negativeButtonColor,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              DropdownButton<int>(
-                value: testLocation,
-                hint: Text('Test Location'),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    testLocation = newValue;
-                  });
-                },
-                items: testLocationOptions.map<DropdownMenuItem<int>>((int value) {
-                  return DropdownMenuItem<int>(
+                  ],
+                ),
+
+                SizedBox(height: 40), // Add spacing here
+
+                FormBuilderDropdown<int>(
+                  name: 'testLocation',
+                  decoration: InputDecoration(labelText: 'Test Location'),
+                  items: [1, 2]
+                      .map((value) => DropdownMenuItem(
                     value: value,
                     child: Text('Option $value'),
-                  );
-                }).toList(),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  if (diagnosis == true) {
-                    TestModel.Test newRastreio = createRastreio(patient!);
-                    patient.addRastreio(newRastreio);
-                    patient.addTest(newRastreio);
-                    appatiteRepo.insertNewTest(user!, newRastreio);
-                    patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaginaEditarDiagnostico(),
-                      ),
-                    );
+                  ))
+                      .toList(),
+                  onChanged: (int? value) {
+                    // Handle changes if needed
+                  },
+                  //todo add validator
+                ),
 
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-                child: Text('Guardar'),
-              ),
-            ],
+                SizedBox(height: 50), // Add spacing here
+
+                Center( // Wrap the button with Center widget
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_fbKey.currentState!.saveAndValidate()) {
+                        final values = _fbKey.currentState!.value;
+                        final diagnosis = values['result'] == true;
+                        final testDate = values['testDate'];
+                        final resultDate = values['resultDate'];
+                        final testLocation = values['testLocation'];
+
+                        final newRastreio = TestModel.Test(
+                          diagnosis: diagnosis,
+                          testDate: testDate,
+                          resultDate: resultDate,
+                          result: result,
+                          testLocation: testLocation,
+                          patient: patient!,
+                        );
+
+                        patient.addRastreio(newRastreio);
+                        patient.addTest(newRastreio);
+                        appatiteRepo.insertNewTest(user!, newRastreio);
+                        patient.updatePatientState(
+                            PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaginaEditarDiagnostico(),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text('Guardar'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    );
-  }
-
-  TestModel.Test createRastreio(Patient patient) {
-    return TestModel.Test(
-      diagnosis: diagnosis,
-      testDate: testDate,
-      resultDate: resultDate,
-      result: result,
-      testLocation: testLocation,
-      patient: patient,
     );
   }
 }
