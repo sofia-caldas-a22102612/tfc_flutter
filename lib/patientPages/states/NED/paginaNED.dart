@@ -37,7 +37,7 @@ class PaginaNED extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MainPage(), // change PatientState
+                  builder: (context) => NovoRastreio(), // change PatientState
                 ),
               );
             },

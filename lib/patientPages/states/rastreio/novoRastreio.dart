@@ -2,38 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
-import 'package:tfc_flutter/model/test.dart' as TestModel; // Import the Test class with a prefix
-import 'package:tfc_flutter/model/TreatmentModel/treatment.dart' as TreatmentModel;
+import 'package:tfc_flutter/model/test.dart' as TestModel;
 import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaEditarDiagnostico.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
 import '../../../model/user.dart';
 
 class NovoRastreio extends StatefulWidget {
-  const NovoRastreio({super.key});
+  const NovoRastreio({Key? key}) : super(key: key);
 
   @override
   _NovoRastreioState createState() => _NovoRastreioState();
 }
 
 class _NovoRastreioState extends State<NovoRastreio> {
-
   bool? diagnosis;
   DateTime? testDate;
   DateTime? resultDate;
   bool? result;
-  int? testLocation;
+  int? testLocation; // Change type to int
+  final List<int> testLocationOptions = [1, 2]; // Define options
+  Color positiveButtonColor = Colors.transparent; // Initial color of positive button
+  Color negativeButtonColor = Colors.transparent; // Initial color of negative button
 
-  // Method to create a new Rastreio object
-  TestModel.Test createRastreio(Patient patient) {
-    return TestModel.Test(
-      diagnosis: diagnosis,
-      testDate: testDate,
-      resultDate: resultDate,
-      result: result,
-      testLocation: testLocation,
-      patient: patient, // Assign the patient to the created Rastreio
+  Future<void> _selectDate(BuildContext context, bool isTestDate) async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
     );
+    if (pickedDate != null) {
+      setState(() {
+        if (isTestDate) {
+          testDate = pickedDate;
+          diagnosis = false;
+        } else {
+          resultDate = pickedDate;
+        }
+      });
+    }
   }
 
   @override
@@ -49,89 +57,134 @@ class _NovoRastreioState extends State<NovoRastreio> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Teste Rastreio',
-                  style: TextStyle(fontSize: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Teste Rastreio',
+                style: TextStyle(fontSize: 30),
+              ),
+              SizedBox(height: 20),
+              GestureDetector(
+                onTap: () => _selectDate(context, true),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today),
+                      SizedBox(width: 10),
+                      Text(
+                        'Test Date: ${testDate != null ? testDate!.toString().split(' ')[0] : "Select a date"}',
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Test Date'),
-                  keyboardType: TextInputType.datetime,
-                  onChanged: (value) {
-                    setState(() {
-                      testDate = DateTime.tryParse(value);
-                      diagnosis = false;
-                    });
-                  },
+              ),
+              SizedBox(height: 10),
+              GestureDetector(
+                onTap: () => _selectDate(context, false),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today),
+                      SizedBox(width: 10),
+                      Text(
+                        'Result Date: ${resultDate != null ? resultDate!.toString().split(' ')[0] : "Select a date"}',
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 10),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Result Date'),
-                  keyboardType: TextInputType.datetime,
-                  onChanged: (value) {
-                    setState(() {
-                      resultDate = DateTime.tryParse(value);
-                    });
-                  },
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Result'),
-                  onChanged: (value) {
-                    setState(() {
-                      result = value.isNotEmpty ? value == 'true' : null;
-                    });
-                  },
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Test Location'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() {
-                      testLocation = int.tryParse(value);
-                    });
-                  },
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    if (diagnosis == true) {
-                      // Create a new Rastreio object
-                      TestModel.Test newRastreio = createRastreio(patient!);
-                      // Add the new Rastreio to the patient
-                      patient!.addRastreio(newRastreio); //todo remove this
-                      patient!.addTest(newRastreio);
-
-                      //todo usar API
-                      appatiteRepo.insertNewTest(user!, newRastreio);
-                      // Change the patient state to POSITIVE_SCREENING_DIAGNOSIS
-                      patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);//todo usar API
-
-                      // Navigate to the edit diagnosis page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PaginaEditarDiagnostico(),
-                        ),
-                      );
-                    } else {
-                      // If the diagnosis is negative, navigate back to the previous page
-                      Navigator.pop(context);
-                    }
-
-                  },
-                  child: Text('Guardar'),
-                ),
-              ],
-            ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Result',
+                style: TextStyle(fontSize: 19),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = true;
+                        positiveButtonColor = Colors.green; // Change color to green when selected
+                        negativeButtonColor = Colors.transparent; // Reset color of negative button
+                      });
+                    },
+                    child: Text('Positive'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: positiveButtonColor, // Apply color based on state
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = false;
+                        negativeButtonColor = Colors.red; // Change color to red when selected
+                        positiveButtonColor = Colors.transparent; // Reset color of positive button
+                      });
+                    },
+                    child: Text('Negative'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: negativeButtonColor, // Apply color based on state
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              DropdownButton<int>(
+                value: testLocation,
+                hint: Text('Test Location'),
+                onChanged: (int? newValue) {
+                  setState(() {
+                    testLocation = newValue;
+                  });
+                },
+                items: testLocationOptions.map<DropdownMenuItem<int>>((int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text('Option $value'),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  if (diagnosis == true) {
+                    TestModel.Test newRastreio = createRastreio(patient!);
+                    patient.addRastreio(newRastreio);
+                    patient.addTest(newRastreio);
+                    appatiteRepo.insertNewTest(user!, newRastreio);
+                    patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PaginaEditarDiagnostico(),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+                child: Text('Guardar'),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  TestModel.Test createRastreio(Patient patient) {
+    return TestModel.Test(
+      diagnosis: diagnosis,
+      testDate: testDate,
+      resultDate: resultDate,
+      result: result,
+      testLocation: testLocation,
+      patient: patient,
     );
   }
 }
