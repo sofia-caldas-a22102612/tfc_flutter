@@ -54,7 +54,7 @@ class AppatiteRepository {
     }
   }
 
-  Future<String?> getPatientState(User sessionOwner, Patient patient) async {
+  Future<PatientStatus?> getPatientState(User sessionOwner, Patient patient) async {
     final id = patient.getId().toString();
     final Response response = await get(
       Uri.parse("$_endpoint/state/$id"),

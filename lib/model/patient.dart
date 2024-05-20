@@ -160,8 +160,8 @@ class Patient {
     return _treatmentList!.last;
   }
 
-  String? getPatientState() {
-    return _patientStatus.toString();
+  PatientStatus? getPatientState() {
+    return _patientStatus;
   }
 
   String getPatientPositiveScreening() {
