@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
@@ -117,6 +118,11 @@ class FakeAppatiteRepository extends AppatiteRepository {
       'History item 3',
     ];
     return history;
+  }
+
+
+  void changeState(User sessionOwner, Patient patient, PatientStatus status) async {
+    patient.updatePatientState(status);
   }
 
 }

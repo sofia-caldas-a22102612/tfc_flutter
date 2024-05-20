@@ -4,10 +4,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart' as TestModel;
-import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaEditarDiagnostico.dart';
+import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
-import '../../../model/user.dart';
 
 class NovoRastreio extends StatefulWidget {
   const NovoRastreio({Key? key}) : super(key: key);
@@ -161,13 +160,12 @@ class _NovoRastreioState extends State<NovoRastreio> {
                         patient.addRastreio(newRastreio);
                         patient.addTest(newRastreio);
                         appatiteRepo.insertNewTest(user!, newRastreio);
-                        patient.updatePatientState(
-                            PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+                        appatiteRepo.changeState(user, patient, PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
 
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PaginaEditarDiagnostico(),
+                            builder: (context) => MainPatientPage(),
                           ),
                         );
                       }

@@ -4,19 +4,17 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart' as TestModel;
-import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaEditarDiagnostico.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
-import '../../../model/user.dart';
 
-class NovoRastreio extends StatefulWidget {
-  const NovoRastreio({Key? key}) : super(key: key);
+class PaginaEditarDiagnostico extends StatefulWidget {
+  const PaginaEditarDiagnostico({Key? key}) : super(key: key);
 
   @override
-  _NovoRastreioState createState() => _NovoRastreioState();
+  _PaginaEditarDiagnosticoState createState() => _PaginaEditarDiagnosticoState();
 }
 
-class _NovoRastreioState extends State<NovoRastreio> {
+class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   bool? result;
   Color positiveButtonColor = Colors.transparent;

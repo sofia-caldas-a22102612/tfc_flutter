@@ -32,7 +32,7 @@ class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PaginaEditarDiagnostico(),
+                    builder: (context) => PaginaTesteDiagnosticoPositivo(),
                   ),
                 );
               },

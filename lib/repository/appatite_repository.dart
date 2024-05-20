@@ -110,4 +110,8 @@ class AppatiteRepository {
     }
   }
 
+  void changeState(User sessionOwner, Patient patient, PatientStatus status) async {
+    //patient.updatePatientState(status);
+  }
+
 }
