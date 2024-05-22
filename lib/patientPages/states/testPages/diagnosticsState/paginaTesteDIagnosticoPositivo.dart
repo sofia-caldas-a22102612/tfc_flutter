@@ -46,6 +46,7 @@ class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
                   ),
                 );
               },
+
               child: Text('Começar Tratamento'),
               //todo finish this part
             ),
