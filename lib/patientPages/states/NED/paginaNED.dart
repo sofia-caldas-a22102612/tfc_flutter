@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/pages/main.page.dart';
-import 'package:tfc_flutter/patientPages/states/rastreio/novoRastreio.dart';
+import 'package:tfc_flutter/patientPages/states/testPages/rastreio/novoRastreio.dart';
 
 import '../../patientPages.dart';
 

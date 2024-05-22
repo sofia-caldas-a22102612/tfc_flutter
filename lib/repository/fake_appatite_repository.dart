@@ -100,13 +100,10 @@ class FakeAppatiteRepository extends AppatiteRepository {
   }
 
 
-  Future<PatientStatus?> getPatientState(User sessionOwner, Patient patient) async {
-    return patient.getPatientState(); // Assuming getStatus() returns the patient state directly
+  Future<String> getPatientState(User sessionOwner, Patient patient) async {
+    return patient.getPatientStateString(); // Assuming getStatus() returns the patient state directly
   }
 
-  Future<List<Treatment>?> getTreatmentList(User sessionOwner, Patient patient) async {
-    return null;
-  }
 
 
   Future<List<String>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
@@ -118,8 +115,30 @@ class FakeAppatiteRepository extends AppatiteRepository {
     return history;
   }
 
+  Future<List<String>> getTestHistory(User sessionOwner, Patient patient) async {
+    List<String> testHistory = [
+      'Test 1',
+      'Test 2',
+      'Test 3',
+    ];
 
-  void changeState(User sessionOwner, Patient patient, PatientStatus status) async {
+    //todo alter backend
+    return testHistory;
+  }
+
+   Future<List<String>> getTreatmentHistory(User sessionOwner, Patient patient) async {
+    List<String> treatmentHistory = [
+      'Treatment 1',
+      'Treatment 2',
+      'Treatment 3',
+    ];
+
+    //todo alter backend
+    return treatmentHistory;
+  }
+
+
+  Future<void> changeState(User sessionOwner, Patient patient, PatientStatus status) async {
     patient.updatePatientState(status);
   }
 

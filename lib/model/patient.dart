@@ -29,6 +29,7 @@ class Patient {
   Test? _lastScreening; // Assuming Test is a valid class representing the last screening
   PatientStatus? _patientStatus;
   List<Treatment>? _treatmentList; // Use the prefix for the Treatment class
+  Treatment? _currentTreatment;
   HashSet<Test>? _testList; // Use the prefix for the Test class
 
 
@@ -76,6 +77,7 @@ class Patient {
     _lastScreening = rastreio;
   }
 
+
   void addTest(Test newTest) {
     _testList ??= HashSet<Test>() as HashSet<
           Test>?;
@@ -92,6 +94,15 @@ class Patient {
     }
   }
 
+  void addTreatment(Treatment newTreatment) {
+    this._currentTreatment = newTreatment;
+  }
+
+
+  bool? hasPositiveRastreio(){
+    return _lastScreening!.result;
+  }
+
   // Getter method for name
   String getName() {
     return _name;
@@ -105,6 +116,10 @@ class Patient {
   // Getter method for id
   String getId() {
     return _id;
+  }
+
+  String getPatientStateString(){
+    return _patientStatus.toString();
   }
 
   // Getter method for age
@@ -193,6 +208,7 @@ class Patient {
             ? DateTime.parse(json['lastProgramDate'] as String)
             : null,
         _userId = json['userId'] as int,
+        _currentTreatment = json['currentTreatment'] as Treatment,
         _patientStatus =
         PatientStatus.values[json['patientStatus'] as int],
         _treatmentList = (json['treatmentList'] as List<dynamic>?)
@@ -218,6 +234,7 @@ class Patient {
       'patientStatus': _patientStatus!.index,
       'treatmentList': _treatmentList?.map((treatment) => treatment.toJson()).toList(),
       'testList': _testList?.map((test) => test.toJson()).toList(),
+      'currentTreatment': _currentTreatment,
     };
   }
 

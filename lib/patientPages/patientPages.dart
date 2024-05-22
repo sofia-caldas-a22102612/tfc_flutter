@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tfc_flutter/patientPages/PatientDetailPage.dart';
+import 'package:tfc_flutter/patientPages/patientDetailPage.dart';
 import 'package:tfc_flutter/patientPages/pageDetail.dart';
 import 'package:tfc_flutter/patientPages/patientStatePage.dart';
 import 'package:tfc_flutter/patientPages/states/Historico/historicoMain.dart';

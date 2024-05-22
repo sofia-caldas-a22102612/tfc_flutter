@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/model/user.dart';
-import 'package:http/http.dart' as http;
 import '../model/TreatmentModel/treatment.dart';
 
 class AuthenticationException implements Exception {}
@@ -17,7 +16,7 @@ class AppatiteRepository {
 
   Future<List<Patient>> fetchPatientsDaily(User sessionOwner) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
-    final Response response = await get(
+    final http.Response response = await http.get(
       Uri.parse("$_endpoint/api/patient/activeTreatment"),
       headers: {'Authorization': 'Basic $basicAuth'},
     );
@@ -35,7 +34,7 @@ class AppatiteRepository {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Map<String, dynamic> requestBody = newTest.toJson();
 
-    final Response response = await post(
+    final http.Response response = await http.post(
       Uri.parse("$_endpoint/new"),
       headers: {
         'Authorization': 'Basic $basicAuth',
@@ -54,9 +53,9 @@ class AppatiteRepository {
     }
   }
 
-  Future<PatientStatus?> getPatientState(User sessionOwner, Patient patient) async {
+  Future<String?> getPatientState(User sessionOwner, Patient patient) async {
     final id = patient.getId().toString();
-    final Response response = await get(
+    final http.Response response = await http.get(
       Uri.parse("$_endpoint/state/$id"),
     );
 
@@ -70,48 +69,98 @@ class AppatiteRepository {
     }
   }
 
+  Future<List<Treatment>> getTreatmentList(User sessionOwner, Patient patient) async {
+    final id = patient.getId().toString();
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final http.Response response = await http.get(
+      Uri.parse("$_endpoint/state/$id/treatments"),
+      headers: {'Authorization': 'Basic $basicAuth'},
+    );
 
-  Future<List<Treatment>?> getTreatmentList(User sessionOwner, Patient patient) async {
-    final String id = patient.getId().toString();
-    final String baseUrl = '$_endpoint/state/$id';
-
-    try {
-      final response = await http.get(Uri.parse(baseUrl));
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return data['message'].toUpperCase();
-      } else if (response.statusCode == 401) {
-        throw AuthenticationException();
-      } else {
-        throw Exception("${response.statusCode} ${response.reasonPhrase}");
-      }
-    } catch (error) {
-      throw Exception('Error: $error');
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body)['message'];
+      return data.map((json) => Treatment.fromJson(json)).toList();
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
 
+  Future<List<String>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
+    final id = patient.getId().toString();
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final http.Response response = await http.get(
+      Uri.parse("$_endpoint/state/$id/history"),
+      headers: {'Authorization': 'Basic $basicAuth'},
+    );
 
-  Future<List<String>?> getHistoryByDateTime(User sessionOwner, Patient patient) async {
-    final String id = patient.getId().toString();
-    final String baseUrl = '$_endpoint/state/$id';
-
-    try {
-      final response = await http.get(Uri.parse(baseUrl));
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return data['message'].toUpperCase();
-      } else if (response.statusCode == 401) {
-        throw AuthenticationException();
-      } else {
-        throw Exception("${response.statusCode} ${response.reasonPhrase}");
-      }
-    } catch (error) {
-      throw Exception('Error: $error');
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body)['message'];
+      return data.map((json) => json.toString()).toList();
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
 
-  void changeState(User sessionOwner, Patient patient, PatientStatus status) async {
-    //patient.updatePatientState(status);
+  Future<List<String>> getTestHistory(User sessionOwner, Patient patient) async {
+    final id = patient.getId().toString();
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final http.Response response = await http.get(
+      Uri.parse("$_endpoint/state/$id/testHistory"),
+      headers: {'Authorization': 'Basic $basicAuth'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body)['message'];
+      return data.map((json) => json.toString()).toList();
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    }
   }
 
+  Future<List<String>> getTreatmentHistory(User sessionOwner, Patient patient) async {
+    final id = patient.getId().toString();
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final http.Response response = await http.get(
+      Uri.parse("$_endpoint/state/$id/treatmentHistory"),
+      headers: {'Authorization': 'Basic $basicAuth'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body)['message'];
+      return data.map((json) => json.toString()).toList();
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    }
+  }
+
+  Future<void> changeState(User sessionOwner, Patient patient, PatientStatus status) async {
+    final id = patient.getId().toString();
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final Map<String, String> requestBody = {'status': status.toString()};
+
+    final http.Response response = await http.put(
+      Uri.parse("$_endpoint/state/$id"),
+      headers: {
+        'Authorization': 'Basic $basicAuth',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      // Successfully changed state
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    }
+  }
 }

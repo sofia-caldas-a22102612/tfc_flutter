@@ -1,67 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/model/TreatmentModel/treatment.dart' as patient_models;
+import 'package:tfc_flutter/model/session.dart';
+import 'package:tfc_flutter/model/user.dart';
 
-import '../../../../model/session.dart';
-
-import '../../../../model/session.dart';
-
+import 'package:tfc_flutter/repository/appatite_repository.dart';
 
 class HistoricoTratamentos extends StatefulWidget {
-
-  const HistoricoTratamentos({super.key});
+  HistoricoTratamentos({Key? key}) : super(key: key);
 
   @override
-  _HistoricoTratamentosState createState() => _HistoricoTratamentosState();
+  State<HistoricoTratamentos> createState() => _HistoricoTratamentosState();
 }
 
 class _HistoricoTratamentosState extends State<HistoricoTratamentos> {
-  List<patient_models.Treatment>? treatments;
-
-  @override
-  void initState() {
-
-    final session = context.watch<Session>();
-    Patient? patient = session.patient;
-    treatments = patient!.getTreatmentList(); //todo use api
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (treatments == null || treatments!.isEmpty) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Patient Treatment History'),
-        ),
-        body: Center(
-          child: Text('Não há Histórico de Tratamentos'),
-        ),
-      );
-    }
-    else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Patient Treatment History'),
-        ),
-        body: ListView.builder(
-          itemCount: treatments!.length,
-          itemBuilder: (context, index) {
-            final treatment = treatments![index];
-            return ListTile(
-              title: Text('Treatment ID: ${treatment.id}'),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Start Date: ${treatment.startDate ?? 'N/A'}'),
-                  Text('End Date: ${treatment.realEndDate ?? 'N/A'}'),
-                  Text('Medication Name: ${treatment.nameMedication ?? 'N/A'}'),
-                ],
+    var appatiteRepository = context.read<AppatiteRepository>();
+    final session = context.watch<Session>();
+    Patient? patient = session.patient;
+    User? user = session.user;
+
+    return Scaffold(
+      body: FutureBuilder(
+        future: appatiteRepository.getTreatmentHistory(user!, patient!),
+        builder: (_, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError || snapshot.data == null) {
+            print(snapshot.error);
+            print('STOP');
+            return Center(child: Text('Error loading data'));
+          } else {
+            var data = snapshot.data as List<String>;
+
+            return Scaffold(
+              body: ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: _buildHistoryItem(data[index]),
+                      ),
+                      Divider(), // Add Divider after each list item
+                    ],
+                  );
+                },
               ),
+
             );
-          },
-        ),
-      );
-    }
+          }
+        },
+      ),
+    );
   }
+
+  Widget _buildHistoryItem(String value) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+        child: ListTile(
+          title: Text(
+            value,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+
 }
