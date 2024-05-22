@@ -5,10 +5,14 @@ import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaEditarDiagnostico.dart';
 
+class PaginaTesteDiagnosticoPositivo extends StatefulWidget {
+  const PaginaTesteDiagnosticoPositivo({Key? key}) : super(key: key);
 
-class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
-  const PaginaTesteDiagnosticoPositivo({Key? key});
+  @override
+  _PaginaTesteDiagnosticoPositivoState createState() => _PaginaTesteDiagnosticoPositivoState();
+}
 
+class _PaginaTesteDiagnosticoPositivoState extends State<PaginaTesteDiagnosticoPositivo> {
   @override
   Widget build(BuildContext context) {
     final session = context.watch<Session>();
@@ -27,9 +31,7 @@ class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-
                   MaterialPageRoute(
-                    // Replace PaginaTesteDiagnosticoPositivo() with the page you want to navigate to
                     builder: (context) => PaginaEditarDiagnostico(),
                   ),
                 );
@@ -39,6 +41,10 @@ class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
+                patient!.updatePatientState(PatientStatus.TREATMENT);
+                // Change the PatientState to indicate treatment has started
+                patient!.updatePatientState(PatientStatus.TREATMENT);
+                // Navigate to the main patient page
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -47,7 +53,6 @@ class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
                 );
               },
               child: Text('Começar Tratamento'),
-              //todo finish this part
             ),
           ],
         ),
