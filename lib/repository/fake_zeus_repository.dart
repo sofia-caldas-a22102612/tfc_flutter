@@ -10,11 +10,51 @@ class FakeZeusRepository extends ZeusRepository {
   Future<List<Patient>> searchPatients(User sessionOwner, String patientName) async {
     if (sessionOwner.userid == 'admin' && sessionOwner.password == '123') {
       return [
-        Patient('paciente 1', 'nome 1', '123456789', DateTime.parse("1996-01-01"), GenderType.male),
-        Patient('paciente 2', 'nome 2', '200000000', DateTime.parse("1992-07-15"), GenderType.female),
-      ];
+        Patient(
+          'paciente 1', // _id
+          'nome 1', // _name
+          '123456789', // _cc
+          DateTime.parse("1996-01-01"), // _birthDate
+          GenderType.male, // _genre
+          25, // _age
+          '1234', // _realId
+          null, // _documentType
+          null, // _lastProgramName
+          null, // _lastProgramDate
+          1, // _userId
+          null, // _lastScreening
+          PatientStatus.NED,
+        ),
+
+    Patient(
+    'paciente 2', // _id
+    'nome 2', // _name
+    '987654321', // _cc
+    DateTime.parse("1990-05-15"), // _birthDate
+    GenderType.female, // _gender
+    32, // _age
+    '456', // _realId
+    789, // _documentType
+    'last program name', // _lastProgramName
+    DateTime.parse("2022-03-25"), // _lastProgramDate
+    2, // _userId
+    null, // _lastScreening
+    PatientStatus.NED, // _state
+    ),
+
+    ];
     } else {
       throw AuthenticationException();
     }
   }
+
+
+
+// Function to check if a string contains only numbers
+  bool _containsOnlyNumbers(String value) {
+    final RegExp regex = RegExp(r'^[0-9]+$');
+    return regex.hasMatch(value);
+  }
+
+
 }

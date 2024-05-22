@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
 
@@ -75,7 +76,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget buildSubmitButton(ZeusRepository zeusRepository, Session session) => ElevatedButton(
         key: Key('signInButton'),
         onPressed: () {
-          AuthenticationException e;
           FocusManager.instance.primaryFocus?.unfocus(); // hide keyboard
           final isValid = formKey.currentState?.validate() ?? true;
           if (isValid) {

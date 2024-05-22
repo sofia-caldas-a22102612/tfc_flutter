@@ -23,22 +23,27 @@ class _MainPageState extends State<MainPage>{
     if (session.user == null) {
       return LoginPage();
     } else {
-      return Scaffold(
-          appBar: AppBar(title: Text(pages[_selectedIndex].title),
-          actions: [
-            PopupMenuButton(
-              icon: Icon(Icons.person),
-              itemBuilder: (context) => [PopupMenuItem(value: 0, child: Text('Sair'))],
-              onSelected: (index) => session.user = null,
-            )
-          ],),
-          body: pages[_selectedIndex].widget,
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (index) => setState(() => _selectedIndex = index),
-            destinations: pages.map((page) => NavigationDestination(icon: Icon(page.icon), label: page.title)).toList(),
-          )
-      );
+      return buildBottomBar(session);
     }
+  }
+
+
+  Scaffold buildBottomBar(Session session) {
+    return Scaffold(
+        appBar: AppBar(title: Text(pages[_selectedIndex].title),
+        actions: [
+          PopupMenuButton(
+            icon: Icon(Icons.person),
+            itemBuilder: (context) => [PopupMenuItem(value: 0, child: Text('Sair'))],
+            onSelected: (index) => session.user = null,
+          )
+        ],),
+        body: pages[_selectedIndex].widget,
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (index) => setState(() => _selectedIndex = index),
+          destinations: pages.map((page) => NavigationDestination(icon: Icon(page.icon), label: page.title)).toList(),
+        )
+    );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tfc_flutter/pages/page1.dart';
-import 'package:tfc_flutter/pages/page2.dart';
+import 'package:tfc_flutter/pages/TratamentosParaHoje.dart';
+import 'package:tfc_flutter/pages/PesquisarUtente.dart';
 
 final pages = [
-  (title: 'page 1', icon: Icons.thumb_up, widget: page1()),
-  (title: 'page 2', icon: Icons.thumb_up, widget: page2()),
+  (title: 'Tratamentos Para Hoje', icon: Icons.list, widget: TratamentosParaHoje()),
+  (title: 'Pesquisar Utentes', icon: Icons.search, widget: PesquisarUtente()),
 ];
