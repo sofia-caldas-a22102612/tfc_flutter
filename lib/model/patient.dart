@@ -237,7 +237,7 @@ class Patient {
       'userId': _userId,
       'patientStatus': _patientStatus!.index,
       'treatmentList': _treatmentList?.map((treatment) => treatment.toJson()).toList(),
-      'testList': _testList?.map((test) => test.toJson()).toList(),
+      // 'testList': _testList?.map((test) => test.toJson()).toList(),
       'currentTreatment': _currentTreatment,
     };
   }

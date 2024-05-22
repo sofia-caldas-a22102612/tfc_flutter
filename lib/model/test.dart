@@ -52,8 +52,8 @@ class Test {
     data['id'] = id;
     data['diagnosis'] = diagnosis;
     data['type'] = type;
-    data['testDate'] = testDate;
-    data['resultDate'] = resultDate;
+    data['testDate'] = testDate?.toIso8601String();
+    data['resultDate'] = resultDate?.toIso8601String();
     data['result'] = result;
     data['testLocation'] = testLocation;
     data['patient'] = patient?.toJson();
