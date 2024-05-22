@@ -1,48 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/model/TreatmentModel/treatment.dart' as patient_models;
-import 'package:tfc_flutter/patientPages/patientPages.dart';
+import 'package:tfc_flutter/model/session.dart';
+import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
+import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaEditarDiagnostico.dart';
+import 'package:tfc_flutter/repository/appatite_repository.dart';
 
-import '../../../model/session.dart';
+class PaginaTratamento extends StatefulWidget {
+  const PaginaTratamento({Key? key}) : super(key: key);
 
-class PaginaTratamento extends StatelessWidget {
-  const PaginaTratamento({super.key});
+  @override
+  _PaginaTratamentoState createState() => _PaginaTratamentoState();
+}
 
+class _PaginaTratamentoState extends State<PaginaTratamento> {
   @override
   Widget build(BuildContext context) {
     final session = context.watch<Session>();
-    Patient? patient = session.patient;
-    // Assuming you have access to the Treatment object for the patient
-    final patient_models.Treatment? treatment =
-        patient!.getCurrentTreatment(); //todo call api
+    final appatiteRepo = AppatiteRepository();
+    final patient = session.patient;
+    final user = session.user;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient Treatment'),
+        title: Text('Detalhes do Tratamento'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //Text(
-            //patientPages[1]['title'] as String,
-            // Access the title from the list
-            //style: TextStyle(fontSize: 30),
-            // ),
+            Text(
+              'Nome do Paciente:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(patient!.getName()),
             SizedBox(height: 20),
-            if (treatment != null) ...[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Start Date: ${treatment.startDate ?? 'N/A'}'),
-                  Text('End Date: ${treatment.realEndDate ?? 'N/A'}'),
-                  Text('Medication Name: ${treatment.nameMedication ?? 'N/A'}'),
-                ],
-              ),
-            ] else ...[
-              Text('No treatment information available'),
-            ],
+            Text(
+              'Idade:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(patient.getAge().toString()),
+            SizedBox(height: 20),
+            Text(
+              'Data de Início do Tratamento:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(patient.getCurrentTreatment().startDate.toString()),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaginaEditarDiagnostico(),
+                  ),
+                );
+              },
+              child: Text('Editar'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                appatiteRepo.changeState(user!, patient!, PatientStatus.TREATMENT);
+                //todo remove this in the future
+                patient.updatePatientState(PatientStatus.TREATMENT);
+                // Navigate to the main patient page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainPatientPage(),
+                  ),
+                );
+              },
+              child: Text('Começar Tratamento'),
+            ),
           ],
         ),
       ),

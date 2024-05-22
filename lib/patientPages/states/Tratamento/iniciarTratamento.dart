@@ -8,14 +8,14 @@ import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
 
-class NovoRastreio extends StatefulWidget {
-  const NovoRastreio({Key? key}) : super(key: key);
+class IniciarTratamento extends StatefulWidget {
+  const IniciarTratamento({Key? key}) : super(key: key);
 
   @override
-  _NovoRastreioState createState() => _NovoRastreioState();
+  _IniciarTratamentoState createState() => _IniciarTratamentoState();
 }
 
-class _NovoRastreioState extends State<NovoRastreio> {
+class _IniciarTratamentoState extends State<IniciarTratamento> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   bool? result;
   Color positiveButtonColor = Colors.transparent;
@@ -159,9 +159,9 @@ class _NovoRastreioState extends State<NovoRastreio> {
 
 
                         final patientStatus = positiveDiagnosis ?
-                          PatientStatus.POSITIVE_SCREENING_DIAGNOSIS
-                        :
-                          PatientStatus.NED;
+                        PatientStatus.POSITIVE_SCREENING_DIAGNOSIS
+                            :
+                        PatientStatus.NED;
 
 
                         await appatiteRepo.insertNewTest(user!, newRastreio);

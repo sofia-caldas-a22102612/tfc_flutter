@@ -49,7 +49,6 @@ class Test {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
     data['diagnosis'] = diagnosis;
     data['type'] = type;
     data['testDate'] = testDate?.toIso8601String();

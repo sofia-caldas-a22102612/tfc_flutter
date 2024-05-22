@@ -15,7 +15,7 @@ enum PatientStatus {
 }
 
 class Patient {
-  String _id;
+  int _idZeus;
   String _name;
   String _cc;
   DateTime _birthDate;
@@ -35,7 +35,7 @@ class Patient {
 
   // Constructor 1: for Patient.withDetails
   Patient.withDetails(
-      this._id,
+      this._idZeus,
       this._name,
       this._cc,
       this._birthDate,
@@ -52,7 +52,7 @@ class Patient {
 
   // Constructor 2: for the provided values
   Patient(
-      this._id,
+      this._idZeus,
       this._name,
       this._cc,
       this._birthDate,
@@ -114,8 +114,8 @@ class Patient {
   }
 
   // Getter method for id
-  String getId() {
-    return _id;
+  int getIdZeus() {
+    return _idZeus;
   }
 
   String getPatientStateString(){
@@ -199,7 +199,7 @@ class Patient {
 
 
   Patient.fromJson(Map<String, dynamic> json)
-      : _id = json['id'] as String,
+      : _idZeus = json['idZeus'] as int,
         _name = json['name'] as String,
         _cc = json['cc'] as String,
         _birthDate = DateTime.parse(json['birthDate'] as String),
@@ -224,19 +224,19 @@ class Patient {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': _id,
+      'idZeus': _idZeus,
       'name': _name,
-      'cc': _cc,
+      // 'cc': _cc,
       'birthDate': _birthDate.toIso8601String(),
       'gender': _gender.index,
-      'age': _age,
+      // 'age': _age,
       'realId': _realId,
       'documentType': _documentType,
       'lastProgramName': _lastProgramName,
       'lastProgramDate': _lastProgramDate?.toIso8601String(),
-      'userId': _userId,
-      'patientStatus': _patientStatus!.index,
-      'treatmentList': _treatmentList?.map((treatment) => treatment.toJson()).toList(),
+      // 'userId': _userId,
+      // 'patientStatus': _patientStatus!.index,
+      // 'treatmentList': _treatmentList?.map((treatment) => treatment.toJson()).toList(),
       // 'testList': _testList?.map((test) => test.toJson()).toList(),
       'currentTreatment': _currentTreatment,
     };

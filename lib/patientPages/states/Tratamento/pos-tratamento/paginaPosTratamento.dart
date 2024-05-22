@@ -2,24 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
-import 'package:tfc_flutter/patientPages/patientPages.dart';
+import 'package:tfc_flutter/patientPages/states/testPages/rastreio/novoRastreio.dart';
+import '../../../patientPages.dart';
 
 class PaginaPosTratamento extends StatelessWidget {
-  const PaginaPosTratamento({super.key});
+  final Patient patient;
+
+  const PaginaPosTratamento({Key? key, required this.patient}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     final session = context.watch<Session>();
     Patient? patient = session.patient;
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+    return Scaffold( // Add Scaffold widget
+      appBar: AppBar( // Add AppBar
+        title: Text('Pos Tratamento'), // Set app bar title
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'title' as String, // todo redo this page
-            style: TextStyle(fontSize: 30),
-          ), // Display the title with a larger font size
+          Center(
+            child: Text(
+              'A Aguadar Teste Diagnóstico',
+              style: TextStyle(color: Colors.black26, fontSize: 30),
+            ),
+          ),
+          Expanded(child: Container()), // Add empty container to push button to the bottom
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NovoRastreio(),
+                  ),
+                );
+              },
+              child: Text('Adicionar Teste'),
+            ),
+          ),
         ],
       ),
     );
