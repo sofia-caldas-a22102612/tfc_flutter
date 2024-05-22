@@ -3,21 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
-import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaEditarDiagnostico.dart';
-import 'package:tfc_flutter/patientPages/states/paginaTratamento.dart';
+import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaEditarDiagnostico.dart';
 
 
 class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
-  const PaginaTesteDiagnosticoPositivo({super.key});
+  const PaginaTesteDiagnosticoPositivo({Key? key});
 
   @override
   Widget build(BuildContext context) {
     final session = context.watch<Session>();
     Patient? patient = session.patient;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Teste Diagnóstico Positivo'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -31,8 +27,10 @@ class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
+
                   MaterialPageRoute(
-                    builder: (context) => PaginaTesteDiagnosticoPositivo(),
+                    // Replace PaginaTesteDiagnosticoPositivo() with the page you want to navigate to
+                    builder: (context) => PaginaEditarDiagnostico(),
                   ),
                 );
               },
@@ -49,6 +47,7 @@ class PaginaTesteDiagnosticoPositivo extends StatelessWidget {
                 );
               },
               child: Text('Começar Tratamento'),
+              //todo finish this part
             ),
           ],
         ),

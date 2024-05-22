@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaTesteDIagnosticoPositivo.dart';
 import 'package:tfc_flutter/patientPages/states/NED/paginaNED.dart';
 import 'package:tfc_flutter/patientPages/states/Tratamento/paginaTratamento.dart';
+import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaTesteDIagnosticoPositivo.dart';
 import '../model/session.dart';
 import '../repository/appatite_repository.dart';
 
@@ -17,7 +17,7 @@ class _PatientStatePageState extends State<PatientStatePage> {
   @override
   void initState() {
     super.initState();
-    _patientStateFuture = _getPatientState();
+    _fetchPatientState(); // Call the function to fetch patient state
   }
 
   @override
@@ -44,23 +44,28 @@ class _PatientStatePageState extends State<PatientStatePage> {
             case 'FINISHED':
               return PaginaNED();
             default:
-              return Center(child: Text('Invalid patient status'));
+              return Center(child: Text('Invalid patient status: $patientState'));
           }
         }
       },
     );
   }
 
-  Future<String?> _getPatientState() async {
+  void _fetchPatientState() {
     final session = context.read<Session>();
     final patient = session.patient;
     final user = session.user;
 
     if (user == null || patient == null) {
-      return 'NED';
+      Exception;
+     // todo throw nullpoint exception
     }
 
     final repository = Provider.of<AppatiteRepository>(context, listen: false);
-    return repository.getPatientState(user, patient);
+    setState(() {
+      _patientStateFuture = repository.getPatientState(user!, patient!); // Fetch patient state
+    });
   }
 }
+
+class AuthenticationException implements Exception {}

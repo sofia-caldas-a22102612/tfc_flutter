@@ -3,7 +3,7 @@ import 'package:tfc_flutter/patientPages/patientDetailPage.dart';
 import 'package:tfc_flutter/patientPages/pageDetail.dart';
 import 'package:tfc_flutter/patientPages/patientStatePage.dart';
 import 'package:tfc_flutter/patientPages/states/Historico/historicoMain.dart';
-import 'package:tfc_flutter/patientPages/states/DiagnosticsState/paginaTesteDIagnosticoPositivo.dart';
+import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaTesteDIagnosticoPositivo.dart';
 
 final List<PageDetail> pages = [
     PageDetail(

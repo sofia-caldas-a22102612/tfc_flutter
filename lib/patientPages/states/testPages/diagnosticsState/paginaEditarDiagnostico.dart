@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart' as TestModel;
+import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
 
@@ -29,7 +30,7 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Diagnostico'),
+        title: Text('Novo Diagnostico'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -41,7 +42,7 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Teste Diagnostico',
+                  'Teste Rastreio',
                   style: TextStyle(fontSize: 30),
                 ),
                 SizedBox(height: 40),
@@ -159,13 +160,14 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                         patient.addRastreio(newRastreio);
                         patient.addTest(newRastreio);
                         appatiteRepo.insertNewTest(user!, newRastreio);
-                        patient.updatePatientState(
-                            PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+                        appatiteRepo.changeState(user, patient, PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+                        //todo remove this in the future
+                        patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
 
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PaginaEditarDiagnostico(),
+                            builder: (context) => MainPatientPage(),
                           ),
                         );
                       }

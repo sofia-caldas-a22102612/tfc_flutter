@@ -119,8 +119,9 @@ class Patient {
   }
 
   String getPatientStateString(){
-    return _patientStatus.toString();
+    return getPatientState()!.toString().split('.').last; // Return the enum value without the enum type prefix
   }
+
 
   // Getter method for age
   DateTime getBirthdate() {
@@ -176,6 +177,9 @@ class Patient {
   }
 
   PatientStatus? getPatientState() {
+    if(_patientStatus==null){
+      _patientStatus = PatientStatus.NED;
+    }
     return _patientStatus;
   }
 

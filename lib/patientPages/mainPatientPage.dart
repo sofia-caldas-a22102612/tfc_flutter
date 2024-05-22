@@ -9,8 +9,15 @@ class MainPatientPage extends StatefulWidget {
   State<MainPatientPage> createState() => _MainPatientPageState();
 }
 
+
 class _MainPatientPageState extends State<MainPatientPage> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = 0; // Reset _selectedIndex to its initial value
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class _MainPatientPageState extends State<MainPatientPage> {
           if (pages[index].title == 'Voltar') {
             // need to do this, to clear any previous push stack that may exist
             Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => MainPage()), (_) => false
+                MaterialPageRoute(builder: (context) => MainPage()), (_) => false
             );
           } else {
             setState(() => _selectedIndex = index);
@@ -37,3 +44,4 @@ class _MainPatientPageState extends State<MainPatientPage> {
     );
   }
 }
+
