@@ -10,7 +10,7 @@ class FakeAppatiteRepository extends AppatiteRepository {
     print('object');
     return [
       Patient(
-        '123',
+        1,
         'Maria',
         '123456789',
         DateTime.parse("1996-01-01"),
@@ -25,7 +25,7 @@ class FakeAppatiteRepository extends AppatiteRepository {
         PatientStatus.NED,
       ),
       Patient(
-        '12234',
+        2,
         'Joao',
         '987654321',
         DateTime.parse("1990-05-15"),
@@ -55,7 +55,7 @@ class FakeAppatiteRepository extends AppatiteRepository {
   Future<List<Patient>> fetchPatientsDailyTest() async {
     return [
       Patient.withDetails(
-        '123',
+        1,
         'Maria',
         '123456789',
         DateTime.parse("1996-01-01"),
@@ -70,7 +70,7 @@ class FakeAppatiteRepository extends AppatiteRepository {
         PatientStatus.NED,
       ),
       Patient.withDetails(
-        '12234',
+        2,
         'Joao',
         '987654321',
         DateTime.parse("1990-05-15"),

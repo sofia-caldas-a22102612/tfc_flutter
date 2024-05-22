@@ -24,7 +24,7 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
         padding: EdgeInsets.all(16.0),
         children: [
           _buildDetailItem('Name', patient!.getName()), // Accessing patient using widget.patient
-          _buildDetailItem('ID', patient.getId()),
+          _buildDetailItem('ID', patient.getIdZeus().toString()),
           _buildDetailItem('CC', patient.getCC()),
           _buildDetailItem('Gender', patient.getBirthdate().toString()),
           _buildDetailItem('Age', patient.getAge().toString()),

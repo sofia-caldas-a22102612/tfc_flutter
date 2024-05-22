@@ -32,7 +32,7 @@ class AppatiteRepository {
     }
   }
 
-  Future<List<Patient>> insertNewTest(User sessionOwner, Test newTest) async {
+  Future<bool> insertNewTest(User sessionOwner, Test newTest) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Map<String, dynamic> requestBody = newTest.toJson();
 
@@ -47,8 +47,7 @@ class AppatiteRepository {
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> result = jsonDecode(response.body)['message'];
-      return result.map((json) => Patient.fromJson(json)).toList();
+      return true;
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {
@@ -57,7 +56,7 @@ class AppatiteRepository {
   }
 
   Future<String?> getPatientState(User sessionOwner, Patient patient) async {
-    final id = patient.getId().toString();
+    final id = patient.getIdZeus().toString();
     final Response response = await http.get(
       Uri.parse("$_endpoint/state/$id"),
     );
@@ -73,7 +72,7 @@ class AppatiteRepository {
   }
 
   Future<List<Treatment>> getTreatmentList(User sessionOwner, Patient patient) async {
-    final id = patient.getId().toString();
+    final id = patient.getIdZeus().toString();
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Response response = await http.get(
       Uri.parse("$_endpoint/state/$id/treatments"),
@@ -91,7 +90,7 @@ class AppatiteRepository {
   }
 
   Future<List<String>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
-    final id = patient.getId().toString();
+    final id = patient.getIdZeus().toString();
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Response response = await http.get(
       Uri.parse("$_endpoint/state/$id/history"),
@@ -109,7 +108,7 @@ class AppatiteRepository {
   }
 
   Future<List<String>> getTestHistory(User sessionOwner, Patient patient) async {
-    final id = patient.getId().toString();
+    final id = patient.getIdZeus().toString();
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Response response = await http.get(
       Uri.parse("$_endpoint/state/$id/testHistory"),
@@ -127,7 +126,7 @@ class AppatiteRepository {
   }
 
   Future<List<String>> getTreatmentHistory(User sessionOwner, Patient patient) async {
-    final id = patient.getId().toString();
+    final id = patient.getIdZeus().toString();
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Response response = await http.get(
       Uri.parse("$_endpoint/state/$id/treatmentHistory"),
@@ -145,7 +144,7 @@ class AppatiteRepository {
   }
 
   Future<void> changeState(User sessionOwner, Patient patient, PatientStatus status) async {
-    final id = patient.getId().toString();
+    final id = patient.getIdZeus().toString();
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Map<String, String> requestBody = {'status': status.toString()};
 

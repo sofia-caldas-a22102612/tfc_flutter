@@ -30,7 +30,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Novo Rastreio'),
+        title: Text('Novo Rastreio (${session.patient?.getName()})'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -140,16 +140,16 @@ class _NovoRastreioState extends State<NovoRastreio> {
 
                 Center( // Wrap the button with Center widget
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_fbKey.currentState!.saveAndValidate()) {
                         final values = _fbKey.currentState!.value;
-                        final diagnosis = values['result'] == true;
+                        final positiveDiagnosis = values['result'] == true;
                         final testDate = values['testDate'];
                         final resultDate = values['resultDate'];
                         final testLocation = values['testLocation'];
 
                         final newRastreio = TestModel.Test(
-                          diagnosis: diagnosis,
+                          diagnosis: positiveDiagnosis,
                           testDate: testDate,
                           resultDate: resultDate,
                           result: result,
@@ -157,12 +157,21 @@ class _NovoRastreioState extends State<NovoRastreio> {
                           patient: patient!,
                         );
 
+
+                        final patientStatus = positiveDiagnosis ?
+                          PatientStatus.POSITIVE_SCREENING_DIAGNOSIS
+                        :
+                          PatientStatus.NED;
+
+
+                        await appatiteRepo.insertNewTest(user!, newRastreio);
+                        await appatiteRepo.changeState(user, patient, patientStatus);
+
                         patient.addRastreio(newRastreio);
                         patient.addTest(newRastreio);
-                        appatiteRepo.insertNewTest(user!, newRastreio);
-                        appatiteRepo.changeState(user, patient, PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+
                         //todo remove this in the future
-                        patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+                        patient.updatePatientState(patientStatus);
 
                         Navigator.push(
                           context,

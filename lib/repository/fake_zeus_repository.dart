@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/repository/zeus_repository.dart';
 
@@ -8,10 +9,13 @@ import '../model/user.dart';
 class FakeZeusRepository extends ZeusRepository {
 
   Future<List<Patient>> searchPatients(User sessionOwner, String patientName) async {
+
+    debugPrint('FakeZeusRepository - search: $patientName');
+
     if (sessionOwner.userid == 'admin' && sessionOwner.password == '123') {
       return [
         Patient(
-          'paciente 1', // _id
+          1, // _id
           'nome 1', // _name
           '123456789', // _cc
           DateTime.parse("1996-01-01"), // _birthDate
@@ -27,7 +31,7 @@ class FakeZeusRepository extends ZeusRepository {
         ),
 
     Patient(
-    'paciente 2', // _id
+    2, // _id
     'nome 2', // _name
     '987654321', // _cc
     DateTime.parse("1990-05-15"), // _birthDate
