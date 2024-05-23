@@ -158,20 +158,12 @@ class _NovoRastreioState extends State<NovoRastreio> {
                         );
 
 
-                        final patientStatus = positiveDiagnosis ?
-                          PatientStatus.POSITIVE_SCREENING_DIAGNOSIS
-                        :
-                          PatientStatus.NED;
+                        patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
 
-
-                        await appatiteRepo.insertNewTest(user!, newRastreio);
-                        await appatiteRepo.changeState(user, patient, patientStatus);
+                        await appatiteRepo.insertNewTest(user!, newRastreio, patient);
 
                         patient.addRastreio(newRastreio);
                         patient.addTest(newRastreio);
-
-                        //todo remove this in the future
-                        patient.updatePatientState(patientStatus);
 
                         Navigator.push(
                           context,

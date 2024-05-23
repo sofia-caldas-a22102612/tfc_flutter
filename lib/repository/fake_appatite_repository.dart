@@ -139,8 +139,4 @@ class FakeAppatiteRepository extends AppatiteRepository {
   }
 
 
-  Future<void> changeState(User sessionOwner, Patient patient, PatientStatus status) async {
-    patient.updatePatientState(status);
-  }
-
 }

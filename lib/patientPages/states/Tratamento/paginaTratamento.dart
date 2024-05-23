@@ -65,9 +65,6 @@ class _PaginaTratamentoState extends State<PaginaTratamento> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                appatiteRepo.changeState(user!, patient!, PatientStatus.TREATMENT);
-                //todo remove this in the future
-                patient.updatePatientState(PatientStatus.TREATMENT);
                 // Navigate to the main patient page
                 Navigator.push(
                   context,

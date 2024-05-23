@@ -32,9 +32,19 @@ class AppatiteRepository {
     }
   }
 
-  Future<bool> insertNewTest(User sessionOwner, Test newTest) async {
+  Future<bool> insertNewTest(User sessionOwner, Test newTest, Patient patient) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
-    final Map<String, dynamic> requestBody = newTest.toJson();
+
+    final Map<String, dynamic> requestBody = {
+      'diagnosis': newTest.diagnosis,
+      'type': newTest.type,
+      'result': newTest.result,
+      'resultDate': newTest.resultDate?.toIso8601String(), // Convert DateTime to ISO 8601 string
+      'testLocation': newTest.testLocation,
+      'testDate': newTest.testDate!.toIso8601String(), // Convert DateTime to ISO 8601 string
+      'patient': patient.toJson(), // Convert Patient object to JSON using its toJson method
+      'patientStatus': patient.getPatientState()!.index, // Access patientStatus using the getter
+    };
 
     final Response response = await http.post(
       Uri.parse("$_endpoint/tests/new"),
@@ -54,6 +64,7 @@ class AppatiteRepository {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
 
   Future<String?> getPatientState(User sessionOwner, Patient patient) async {
     final id = patient.getIdZeus().toString();
@@ -143,28 +154,8 @@ class AppatiteRepository {
     }
   }
 
-  Future<void> changeState(User sessionOwner, Patient patient, PatientStatus status) async {
-    final id = patient.getIdZeus().toString();
-    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
-    final Map<String, String> requestBody = {'status': status.toString()};
 
-    final Response response = await http.put(
-      Uri.parse("$_endpoint/state/$id"),
-      headers: {
-        'x-api-token': '$_apiKey',
-        'Authorization': 'Basic $basicAuth',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(requestBody),
-    );
+  //todo get rid of this and fetch state from API
 
-    if (response.statusCode == 200) {
-      // Successfully changed state
-    } else if (response.statusCode == 401) {
-      throw AuthenticationException();
-    } else {
-      throw Exception("${response.statusCode} ${response.reasonPhrase}");
-    }
-  }
 
 }
