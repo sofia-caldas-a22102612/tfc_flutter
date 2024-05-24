@@ -39,11 +39,10 @@ class AppatiteRepository {
       'diagnosis': newTest.diagnosis,
       'type': newTest.type,
       'result': newTest.result,
-      'resultDate': newTest.resultDate?.toIso8601String(), // Convert DateTime to ISO 8601 string
+      'resultDate': newTest.resultDate?.toIso8601String(),
       'testLocation': newTest.testLocation,
-      'testDate': newTest.testDate!.toIso8601String(), // Convert DateTime to ISO 8601 string
-      'patient': patient.toJson(), // Convert Patient object to JSON using its toJson method
-      'patientStatus': patient.getPatientState()!.index, // Access patientStatus using the getter
+      'testDate': newTest.testDate?.toIso8601String(),
+      'patient': patient.toJson(), // Use toJson method of Patient class
     };
 
     final Response response = await http.post(
@@ -64,6 +63,7 @@ class AppatiteRepository {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
 
 
   Future<String?> getPatientState(User sessionOwner, Patient patient) async {
