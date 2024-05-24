@@ -66,6 +66,20 @@ class Patient {
         _patientStatus = patientStatus;
 
 
+  //todo adicionei este builder devido ao estado nao existir no zeus
+  Patient.fromZeus(
+      this._idZeus,
+      this._name,
+      this._cc,
+      this._birthDate,
+      this._gender,
+      this._realId,
+      this._documentType,
+      this._lastProgramName,
+      this._lastProgramDate,
+      this._userId
+      );
+
   void updatePatientState(PatientStatus status) {
     _patientStatus = status;
   }
@@ -226,7 +240,6 @@ class Patient {
       'cc': _cc,
       'birthDate': _birthDate.toIso8601String(),
       'gender': _gender.index,
-      'age': _age,
       'realId': _realId,
       'documentType': _documentType,
       'lastProgramName': _lastProgramName,

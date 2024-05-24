@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tfc_flutter/pages/TratamentosParaHoje.dart';
 import 'package:tfc_flutter/patientPages/patientDetailPage.dart';
 import 'package:tfc_flutter/patientPages/pageDetail.dart';
 import 'package:tfc_flutter/patientPages/patientStatePage.dart';
@@ -24,6 +25,7 @@ final List<PageDetail> pages = [
     PageDetail(
         title: 'Voltar',
         icon: Icons.settings_backup_restore,
-        widget: PaginaTesteDiagnosticoPositivo(),
+       // widget: PaginaTesteDiagnosticoPositivo(), //todo, isto está certo?
+        widget: TratamentosParaHoje()
     ),
 ];

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/user.dart';
-
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
 class HistoricoMain extends StatefulWidget {
@@ -22,34 +21,40 @@ class _HistoricoMainState extends State<HistoricoMain> {
     User? user = session.user;
 
     return Scaffold(
-      body: FutureBuilder(
+      body: FutureBuilder<Map<String, dynamic>>(
         future: appatiteRepository.getHistoryByDateTime(user!, patient!),
         builder: (_, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError || snapshot.data == null) {
+          } else if (snapshot.hasError) {
             print(snapshot.error);
-            print('STOP');
             return Center(child: Text('Error loading data'));
+          } else if (snapshot.data == null) {
+            // Check if snapshot data is null
+
+            return Center(child: Text('Sem Historico'));
           } else {
-            var data = snapshot.data as List<String>;
+            var tests = snapshot.data!['tests'] as List<String>;
+            var treatments = snapshot.data!['treatments'] as List<String>;
+
+            // Combine tests and treatments into a single list
+            var historyItems = [...tests, ...treatments];
 
             return Scaffold(
               body: ListView.builder(
-                itemCount: data.length,
+                itemCount: historyItems.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
                       Padding(
                         padding: EdgeInsets.all(16.0),
-                        child: _buildHistoryItem(data[index]),
+                        child: _buildHistoryItem(historyItems[index]),
                       ),
                       Divider(), // Add Divider after each list item
                     ],
                   );
                 },
               ),
-
             );
           }
         },
@@ -70,5 +75,4 @@ class _HistoricoMainState extends State<HistoricoMain> {
       ),
     );
   }
-
 }

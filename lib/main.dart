@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/pages/main.page.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
-import 'package:tfc_flutter/repository/fake_appatite_repository.dart';
 import 'package:tfc_flutter/repository/zeus_repository.dart';
 
 import 'repository/fake_zeus_repository.dart';
@@ -21,7 +20,8 @@ Future<void> main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => Session()),
-      Provider<ZeusRepository>.value(value: ZeusRepository()),  // replace by ZeusRepository for real interaction with the API
+      Provider<ZeusRepository>.value(value: FakeZeusRepository()),  // todo replace by ZeusRepository for real interaction with the API
+      //Provider<ZeusRepository>.value(value: ZeusRepository()),
       Provider<AppatiteRepository>.value(value: AppatiteRepository()),
     ],
     child: const MyApp(),

@@ -12,9 +12,9 @@ class FakeZeusRepository extends ZeusRepository {
 
     debugPrint('FakeZeusRepository - search: $patientName');
 
-    if (sessionOwner.userid == 'admin' && sessionOwner.password == '123') {
+    if (sessionOwner.userid == 'user' && sessionOwner.password == 'password') {
       return [
-        Patient(
+        Patient.fromZeus(
           1, // _id
           'nome 1', // _name
           '123456789', // _cc
@@ -25,11 +25,11 @@ class FakeZeusRepository extends ZeusRepository {
           null, // _lastProgramName
           null, // _lastProgramDate
           1, // _userId
-          null, // _lastScreening
-          PatientStatus.NED,
+          //null, // _lastScreening
+          //PatientStatus.NED,
         ),
 
-    Patient(
+    Patient.fromZeus(  //todo adicionei este builder devido ao estado nao existir no zeus
     2, // _id
     'nome 2', // _name
     '987654321', // _cc
@@ -40,8 +40,8 @@ class FakeZeusRepository extends ZeusRepository {
     'last program name', // _lastProgramName
     DateTime.parse("2022-03-25"), // _lastProgramDate
     2, // _userId
-    null, // _lastScreening
-    PatientStatus.NED, // _state
+    //null, // _lastScreening
+    //PatientStatus.NED, // _state //
     ),
 
     ];

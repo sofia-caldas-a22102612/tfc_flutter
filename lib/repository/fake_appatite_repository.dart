@@ -103,14 +103,14 @@ class FakeAppatiteRepository extends AppatiteRepository {
 
 
 
-  Future<List<String>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
+  /*Future<Map<String, dynamic>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
     List<String> history = [
       'History item 1',
       'History item 2',
       'History item 3',
     ];
-    return history;
-  }
+    return null;
+  }*/
 
   Future<List<String>> getTestHistory(User sessionOwner, Patient patient) async {
     List<String> testHistory = [

@@ -19,18 +19,23 @@ class AppatiteRepository {
   Future<List<Patient>> fetchPatientsDaily(User sessionOwner) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Response response = await http.get(
-      Uri.parse("$_endpoint/api/patient/activeTreatment"),
+      Uri.parse("$_endpoint/patient/activeTreatment"),
       headers: {'x-api-token': '$_apiKey', 'Authorization': 'Basic $basicAuth'},
     );
+
     if (response.statusCode == 200) {
-      final List<dynamic> result = jsonDecode(response.body)['message'];
-      return result.map((json) => Patient.fromJson(json)).toList();
+      final List<dynamic> data = jsonDecode(response.body);
+      // Parse each patient from the response data
+      final List<Patient> patients = data.map((json) => Patient.fromJson(json)).toList();
+      return patients;
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
+
 
   Future<bool> insertNewTest(User sessionOwner, Test newTest, Patient patient) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
@@ -70,7 +75,7 @@ class AppatiteRepository {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final id = patient.getIdZeus().toString();
     final Response response = await http.get(
-      Uri.parse("$_endpoint/patient/currentStatus?zeusId=$id"),
+      Uri.parse("$_endpoint/patient/currentStatus?zeusId=$id"), // Update the endpoint here
       headers: {'x-api-token': '$_apiKey', 'Authorization': 'Basic $basicAuth'},
     );
 
@@ -83,6 +88,7 @@ class AppatiteRepository {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
 
   Future<List<Treatment>> getTreatmentList(User sessionOwner, Patient patient) async {
     final id = patient.getIdZeus().toString();
@@ -102,23 +108,27 @@ class AppatiteRepository {
     }
   }
 
-  Future<List<String>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
+
+
+  //todo adicionei ao backend
+  Future<Map<String, dynamic>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
     final id = patient.getIdZeus().toString();
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final Response response = await http.get(
-      Uri.parse("$_endpoint/state/$id/history"),
+      Uri.parse("$_endpoint/completeHistory/$id"),
       headers: {'Authorization': 'Basic $basicAuth'},
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body)['message'];
-      return data.map((json) => json.toString()).toList();
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return data;
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
 
   Future<List<String>> getTestHistory(User sessionOwner, Patient patient) async {
     final id = patient.getIdZeus().toString();
