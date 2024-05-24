@@ -223,20 +223,22 @@ class Patient {
     return {
       'idZeus': _idZeus,
       'name': _name,
-      // 'cc': _cc,
+      'cc': _cc,
       'birthDate': _birthDate.toIso8601String(),
       'gender': _gender.index,
-      // 'age': _age,
+      'age': _age,
       'realId': _realId,
       'documentType': _documentType,
       'lastProgramName': _lastProgramName,
       'lastProgramDate': _lastProgramDate?.toIso8601String(),
-      // 'userId': _userId,
-      // 'patientStatus': _patientStatus!.index,
-      // 'treatmentList': _treatmentList?.map((treatment) => treatment.toJson()).toList(),
-      // 'testList': _testList?.map((test) => test.toJson()).toList(),
-      'currentTreatment': _currentTreatment,
+      'userId': _userId,
+      'lastScreening': _lastScreening?.toJson(),
+      'patientStatus': _patientStatus?.index, // Include patient status here
+      'treatmentList': _treatmentList?.map((treatment) => treatment.toJson()).toList(),
+      'testList': _testList?.map((test) => test.toJson()).toList(),
+      'currentTreatment': _currentTreatment?.toJson(),
     };
   }
+
 
 }

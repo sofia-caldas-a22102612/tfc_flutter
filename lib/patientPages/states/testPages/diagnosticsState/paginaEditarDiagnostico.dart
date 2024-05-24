@@ -159,10 +159,7 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
 
                         patient.addRastreio(newRastreio);
                         patient.addTest(newRastreio);
-                        appatiteRepo.insertNewTest(user!, newRastreio);
-                        appatiteRepo.changeState(user, patient, PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
-                        //todo remove this in the future
-                        patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+                        appatiteRepo.insertNewTest(user!, newRastreio, patient);
 
                         Navigator.push(
                           context,
