@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
             final user = User(userid: _userId!, password: _password!);
 
             // call search api only to check if the password is valid
-            zeusRepository.searchPatients(user, 'teste').then((_) {
+            zeusRepository.searchPatients(user, '1').then((_) {
               session.user = user;
             }).onError((error, _) {
               if (error is AuthenticationException) {

@@ -12,18 +12,17 @@ class PatientStatePage extends StatefulWidget {
 }
 
 class _PatientStatePageState extends State<PatientStatePage> {
-  Future<String?>? _patientStateFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchPatientState(); // Call the function to fetch patient state
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    final repository = context.read<AppatiteRepository>();
+    final session = context.read<Session>();
+    final patient = session.patient;
+    final user = session.user;
+
     return FutureBuilder<String?>(
-      future: _patientStateFuture,
+      future: repository.getPatientState(user!, patient!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -49,22 +48,6 @@ class _PatientStatePageState extends State<PatientStatePage> {
         }
       },
     );
-  }
-
-  void _fetchPatientState() {
-    final session = context.read<Session>();
-    final patient = session.patient;
-    final user = session.user;
-
-    if (user == null || patient == null) {
-      Exception;
-     // todo throw nullpoint exception
-    }
-
-    final repository = Provider.of<AppatiteRepository>(context, listen: false);
-    setState(() {
-      _patientStateFuture = repository.getPatientState(user!, patient!); // Fetch patient state
-    });
   }
 }
 

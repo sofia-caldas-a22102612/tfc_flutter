@@ -56,14 +56,16 @@ class AppatiteRepository {
   }
 
   Future<String?> getPatientState(User sessionOwner, Patient patient) async {
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final id = patient.getIdZeus().toString();
     final Response response = await http.get(
-      Uri.parse("$_endpoint/state/$id"),
+      Uri.parse("$_endpoint/patient/currentStatus?zeusId=$id"),
+      headers: {'x-api-token': '$_apiKey', 'Authorization': 'Basic $basicAuth'},
     );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return data['message'].toUpperCase();
+      return data['status'].toUpperCase();
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {

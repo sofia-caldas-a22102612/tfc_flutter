@@ -6,7 +6,7 @@ import 'package:tfc_flutter/model/TreatmentModel/treatment.dart'; // Import the 
 
 
 enum PatientStatus {
-  NED,
+  NED,  // no evidence of disease
   POSITIVE_SCREENING_DIAGNOSIS,
   POSITIVE_DIAGNOSIS,
   TREATMENT,
@@ -17,10 +17,9 @@ enum PatientStatus {
 class Patient {
   int _idZeus;
   String _name;
-  String _cc;
+  String? _cc;
   DateTime _birthDate;
   GenderType _gender;
-  int _age;
   String? _realId;
   int? _documentType;
   String? _lastProgramName;
@@ -40,7 +39,6 @@ class Patient {
       this._cc,
       this._birthDate,
       this._gender,
-      this._age,
       this._realId,
       this._documentType,
       this._lastProgramName,
@@ -57,7 +55,6 @@ class Patient {
       this._cc,
       this._birthDate,
       this._gender,
-      this._age,
       this._realId,
       this._documentType,
       this._lastProgramName,
@@ -109,7 +106,7 @@ class Patient {
   }
 
   // Getter method for cc
-  String getCC() {
+  String? getCC() {
     return _cc;
   }
 
@@ -131,10 +128,6 @@ class Patient {
   //get gender
   GenderType getGender() {
     return _gender;
-  }
-
-  int getAge() {
-    return _age;
   }
 
   // Getter method for realId
@@ -196,6 +189,11 @@ class Patient {
     }
   }
 
+  Patient.fromJsonZeus(Map<String, dynamic> json)
+      : _idZeus = json['utente_id'] as int,
+        _name = json['utente_nome'],
+        _birthDate = DateTime.parse(json['utente_data_nascimento'] as String),
+        _gender = json['utente_genero'] == 'Masculino' ? GenderType.male : GenderType.female;
 
 
   Patient.fromJson(Map<String, dynamic> json)
@@ -204,7 +202,6 @@ class Patient {
         _cc = json['cc'] as String,
         _birthDate = DateTime.parse(json['birthDate'] as String),
         _gender = GenderType.values[json['gender'] as int],
-        _age = json['age'] as int,
         _realId = json['realId'] as String?, // Ensure this matches your data type
         _documentType = json['documentType'] as int?,
         _lastProgramName = json['lastProgramName'] as String?,

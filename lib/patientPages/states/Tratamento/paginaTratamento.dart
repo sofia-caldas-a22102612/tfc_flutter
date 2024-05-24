@@ -38,11 +38,11 @@ class _PaginaTratamentoState extends State<PaginaTratamento> {
             Text(patient!.getName()),
             SizedBox(height: 20),
             Text(
-              'Idade:',
+              'Data de nascimento:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 5),
-            Text(patient.getAge().toString()),
+            Text(patient.getBirthdate().toString()),
             SizedBox(height: 20),
             Text(
               'Data de Início do Tratamento:',
