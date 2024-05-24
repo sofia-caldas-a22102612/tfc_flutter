@@ -52,6 +52,7 @@ class _PaginaTesteDiagnosticoPositivoState extends State<PaginaTesteDiagnosticoP
                   ),
                 );
               },
+
               child: Text('Começar Tratamento'),
             ),
           ],
