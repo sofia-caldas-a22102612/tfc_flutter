@@ -226,7 +226,6 @@ class Patient {
       'cc': _cc,
       'birthDate': _birthDate.toIso8601String(),
       'gender': _gender.index,
-      'age': _age,
       'realId': _realId,
       'documentType': _documentType,
       'lastProgramName': _lastProgramName,
