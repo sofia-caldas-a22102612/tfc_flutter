@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart' as TestModel;
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
@@ -158,12 +157,12 @@ class _NovoRastreioState extends State<NovoRastreio> {
                         );
 
 
-                        patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
+                        //patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
 
                         await appatiteRepo.insertNewTest(user!, newRastreio, patient);
 
-                        patient.addRastreio(newRastreio);
-                        patient.addTest(newRastreio);
+                        //patient.addRastreio(newRastreio);
+                        //patient.addTest(newRastreio);
 
                         Navigator.push(
                           context,

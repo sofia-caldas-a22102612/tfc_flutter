@@ -1,0 +1,24 @@
+-mudar para portugues
+
+garantir que a aplicação mostra:
+-a pesquisa
+-mostrar que paciente nao existe na base de dados
+-inserir rastreio negativo //todo melhorar aspeto
+    mudar option 1 e option 2 para as localizações corretas
+    corrigir o envio para o servidor
+
+-mostrar que estado corrente foi atualizado
+    estado tem de vir da api
+-inserir rastreio positivo
+-mostrar que estado corrente foi atualizado
+-mostrar que o historico foi atualizado, dois testes por ordem cronologica com (dataHora, resultado do teste ou tratamento)
+-carregar no voltar, escolher utente diferente e garantir que os dados do utente original estão guardados
+-1º utente resultado positivo e 2º utente resultado negativo
+-adicionar no dataloader 2 utentes em tratamento e garantir que a pagina de tratamento diario mostra os utentes
+-quando se clica no utente garantir que mostra o estado certo
+-alterar a topbar
+
+
+
+
+-inserir r

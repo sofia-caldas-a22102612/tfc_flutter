@@ -18,18 +18,19 @@ class PaginaNED extends StatelessWidget {
     final session = context.watch<Session>();
     Patient? patient = session.patient;
 
+
     return Column(
+
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
-          child: Text(
-            'Resultado do Último Rastreio: ' +
-                patient!.getPatientPositiveScreening(),
+          child: Text('Resultado do Último Rastreio: Negativo',
             style: TextStyle(color: Colors.black26, fontSize: 30),
           ),
         ),
         Expanded(child: Container()), // Add empty container to push button to the bottom
         Padding(
+
           padding: const EdgeInsets.all(16.0),
           child: TextButton(
             onPressed: () {
@@ -48,3 +49,5 @@ class PaginaNED extends StatelessWidget {
     );
   }
 }
+
+//todo adicionar if statement sobre se paciente não existe na base de dados ou se ja acabou tratamento

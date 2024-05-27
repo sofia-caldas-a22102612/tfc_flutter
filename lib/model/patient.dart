@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:flutter/material.dart';
 import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/model/test.dart'; // Import the Test class with a prefix
 import 'package:tfc_flutter/model/TreatmentModel/treatment.dart'; // Import the Treatment class with a prefix
@@ -11,7 +12,8 @@ enum PatientStatus {
   POSITIVE_DIAGNOSIS,
   TREATMENT,
   POST_TREATMENT_ANALYSIS,
-  FINISHED
+  FINISHED, //todo remove
+  NOT_IN_DATABASE
 }
 
 class Patient {
