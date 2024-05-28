@@ -23,7 +23,7 @@ class Patient {
   DateTime _birthDate;
   GenderType _gender;
   String? _realId;
-  int? _documentType;
+  String? _documentType;
   String? _lastProgramName;
   DateTime? _lastProgramDate;
   int? _userId;
@@ -79,7 +79,6 @@ class Patient {
       this._documentType,
       this._lastProgramName,
       this._lastProgramDate,
-      this._userId
       );
 
   void updatePatientState(PatientStatus status) {
@@ -152,7 +151,7 @@ class Patient {
   }
 
   // Getter method for documentType
-  int? getDocumentType() {
+  String? getDocumentType() {
     return _documentType;
   }
 
@@ -219,7 +218,7 @@ class Patient {
         _birthDate = DateTime.parse(json['birthDate'] as String),
         _gender = GenderType.values[json['gender'] as int],
         _realId = json['realId'] as String?, // Ensure this matches your data type
-        _documentType = json['documentType'] as int?,
+        _documentType = json['documentType'] as String?,
         _lastProgramName = json['lastProgramName'] as String?,
         _lastProgramDate = json['lastProgramDate'] != null
             ? DateTime.parse(json['lastProgramDate'] as String)
