@@ -5,14 +5,14 @@ import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaEditarDiagnostico.dart';
 
-class PaginaTesteDiagnosticoPositivo extends StatefulWidget {
-  const PaginaTesteDiagnosticoPositivo({Key? key}) : super(key: key);
+class NovoDiagnostico extends StatefulWidget {
+  const NovoDiagnostico({Key? key}) : super(key: key);
 
   @override
-  _PaginaTesteDiagnosticoPositivoState createState() => _PaginaTesteDiagnosticoPositivoState();
+  _NovoDiagnosticoState createState() => _NovoDiagnosticoState();
 }
 
-class _PaginaTesteDiagnosticoPositivoState extends State<PaginaTesteDiagnosticoPositivo> {
+class _NovoDiagnosticoState extends State<NovoDiagnostico> {
   @override
   Widget build(BuildContext context) {
     final session = context.watch<Session>();

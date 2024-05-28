@@ -8,7 +8,7 @@ import 'package:tfc_flutter/model/TreatmentModel/treatment.dart'; // Import the 
 
 enum PatientStatus {
   NED,  // no evidence of disease
-  POSITIVE_SCREENING_DIAGNOSIS,
+  POSITIVE_SCREENING,
   POSITIVE_DIAGNOSIS,
   TREATMENT,
   POST_TREATMENT_ANALYSIS,
@@ -213,6 +213,7 @@ class Patient {
     };
   }
 
+
   Patient.fromJsonZeus(Map<String, dynamic> json)
       : _idZeus = json['idZeus'] as int,
         _name = json['name'],
@@ -270,7 +271,7 @@ class Patient {
       case "NED":
         return PatientStatus.NED;
       case "POSITIVE_SCREENING_DIAGNOSIS":
-        return PatientStatus.POSITIVE_SCREENING_DIAGNOSIS;
+        return PatientStatus.POSITIVE_SCREENING;
       case "POSITIVE_DIAGNOSIS":
         return PatientStatus.POSITIVE_DIAGNOSIS;
       case "TREATMENT":

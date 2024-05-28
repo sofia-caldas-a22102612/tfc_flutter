@@ -17,6 +17,7 @@ class PaginaNED extends StatefulWidget {
 }
 
 class _PaginaNEDState extends State<PaginaNED> {
+
   Widget _buildContent(Enum status) {
     switch (status) {
       case PatientStatus.NOT_IN_DATABASE:
@@ -65,13 +66,11 @@ class _PaginaNEDState extends State<PaginaNED> {
   @override
   Widget build(BuildContext context) {
     final session = context.watch<Session>();
-    final appatiteRepo = AppatiteRepository();
     final patient = session.patient;
     final user = session.user;
 
     // Check the patient's status
-    var status = appatiteRepo.getPatientState(user!, patient!);
-    var statusEnum = appatiteRepo.stringToPatientStatus(status);
+    var status = patient!.getPatientState();
 
 
     return Scaffold(
@@ -80,7 +79,7 @@ class _PaginaNEDState extends State<PaginaNED> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildContent(statusEnum),
+              _buildContent(status as Enum),
               SizedBox(height: 32), // Add spacing before the button
               Padding(
                 padding: const EdgeInsets.all(16.0),

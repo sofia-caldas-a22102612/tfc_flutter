@@ -4,8 +4,8 @@ import 'package:http/http.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/model/user.dart';
+import 'package:tfc_flutter/util/http.dart';
 import '../model/TreatmentModel/treatment.dart';
-import '../util/http.dart';
 
 class AuthenticationException implements Exception {}
 
@@ -47,9 +47,9 @@ class AppatiteRepository {
       'resultDate': newTest.resultDate?.toIso8601String(),
       'testLocation': newTest.testLocation,
       'testDate': newTest.testDate?.toIso8601String(),
-      'patient': patient.toJson(), // Ensure this matches PatientRequest
-      'patientStatus': patient.getPatientStateString()
+      'patient': patient.toJsonZeus(), // Ensure this matches PatientRequest
     };
+
 
     final Response response = await http.post(
       Uri.parse("$_endpoint/tests/new"),
@@ -76,7 +76,7 @@ class AppatiteRepository {
       case "NED":
         return PatientStatus.NED;
       case "POSITIVE_SCREENING_DIAGNOSIS":
-        return PatientStatus.POSITIVE_SCREENING_DIAGNOSIS;
+        return PatientStatus.POSITIVE_SCREENING;
       case "POSITIVE_DIAGNOSIS":
         return PatientStatus.POSITIVE_DIAGNOSIS;
       case "TREATMENT":
@@ -94,14 +94,14 @@ class AppatiteRepository {
   Future<String?> getPatientState(User sessionOwner, Patient patient) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final id = patient.getIdZeus().toString();
-    final Response response = await http.get(
-      Uri.parse("$_endpoint/patient/currentStatus?zeusId=$id"), // Update the endpoint here
-      headers: {'x-api-token': '$_apiKey', 'Authorization': 'Basic $basicAuth'},
+    final response = await http.get(
+      Uri.parse("$_endpoint/patient/currentStatus?zeusId=$id"),
+      headers: {'x-api-token': _apiKey!, 'Authorization': 'Basic $basicAuth'},
     );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return data['status'].toUpperCase();
+      return data['status']?.toUpperCase();
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {
@@ -129,6 +129,22 @@ class AppatiteRepository {
   }
 
 
+  Future<Test> getTestById(User sessionOwner, int testId) async {
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final Response response = await http.get(
+      Uri.parse("$_endpoint/test/$testId"),
+      headers: {'x-api-token': '$_apiKey', 'Authorization': 'Basic $basicAuth'},
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return Test.fromJson(data);
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    }
+  }
 
   //todo adicionei ao backend
   Future<Map<String, dynamic>> getHistoryByDateTime(User sessionOwner, Patient patient) async {
@@ -161,6 +177,25 @@ class AppatiteRepository {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body)['message'];
       return data.map((json) => json.toString()).toList();
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    }
+  }
+
+  Future<Test> getCurrentTest(User sessionOwner, int zeusId) async {
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final Response response = await http.get(
+      Uri.parse("$_endpoint/currentTest/$zeusId"),
+      headers: {'x-api-token': '$_apiKey', 'Authorization': 'Basic $basicAuth'},
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return Test.fromJson(data);
+    } else if (response.statusCode == 404) {
+      throw Exception("Test not found for patient with zeusId $zeusId");
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {

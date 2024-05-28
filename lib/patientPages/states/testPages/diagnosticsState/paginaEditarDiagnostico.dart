@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart' as TestModel;
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
-
 
 class PaginaEditarDiagnostico extends StatefulWidget {
   const PaginaEditarDiagnostico({Key? key}) : super(key: key);
@@ -42,7 +40,7 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Teste Rastreio',
+                  'Teste Diagnostico',
                   style: TextStyle(fontSize: 30),
                 ),
                 SizedBox(height: 40),
@@ -58,12 +56,10 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                     onChanged: (DateTime? value) {
                       // Handle changes if needed
                     },
-                    //todo add validator
+                    // Add validator if needed
                   ),
                 ),
-
                 SizedBox(height: 40), // Add spacing here
-
                 SizedBox(
                   height: 60, // Adjust the height as needed
                   child: FormBuilderDateTimePicker(
@@ -76,12 +72,10 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                     onChanged: (DateTime? value) {
                       // Handle changes if needed
                     },
-                    //todo add validator
+                    // Add validator if needed
                   ),
                 ),
-
                 SizedBox(height: 40), // Add spacing here
-
                 Text(
                   'Result',
                   style: TextStyle(fontSize: 19),
@@ -118,9 +112,7 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                     ),
                   ],
                 ),
-
                 SizedBox(height: 40), // Add spacing here
-
                 FormBuilderDropdown<int>(
                   name: 'testLocation',
                   decoration: InputDecoration(labelText: 'Test Location'),
@@ -133,22 +125,22 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                   onChanged: (int? value) {
                     // Handle changes if needed
                   },
-                  //todo add validator
+                  // Add validator if needed
                 ),
-
                 SizedBox(height: 50), // Add spacing here
-
                 Center( // Wrap the button with Center widget
                   child: ElevatedButton(
                     onPressed: () {
                       if (_fbKey.currentState!.saveAndValidate()) {
                         final values = _fbKey.currentState!.value;
-                        final diagnosis = values['result'] == true;
                         final testDate = values['testDate'];
                         final resultDate = values['resultDate'];
                         final testLocation = values['testLocation'];
 
-                        final newRastreio = TestModel.Test(
+                        // Set diagnosis to true for all tests
+                        final diagnosis = true;
+
+                        final newDiagnosis = TestModel.Test(
                           diagnosis: diagnosis,
                           testDate: testDate,
                           resultDate: resultDate,
@@ -157,9 +149,7 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                           patient: patient!,
                         );
 
-                        patient.addRastreio(newRastreio);
-                        patient.addTest(newRastreio);
-                        appatiteRepo.insertNewTest(user!, newRastreio, patient);
+                        appatiteRepo.insertNewTest(user!, newDiagnosis, patient);
 
                         Navigator.push(
                           context,

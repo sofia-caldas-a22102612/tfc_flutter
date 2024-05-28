@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart' as TestModel;
@@ -14,7 +13,9 @@ class NovoRastreio extends StatefulWidget {
 }
 
 class _NovoRastreioState extends State<NovoRastreio> {
-  final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  DateTime? selectedTestDate;
+  DateTime? selectedResultDate;
   bool? result;
   Color positiveButtonColor = Colors.transparent;
   Color negativeButtonColor = Colors.transparent;
@@ -33,9 +34,8 @@ class _NovoRastreioState extends State<NovoRastreio> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: FormBuilder(
-            key: _fbKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -44,32 +44,70 @@ class _NovoRastreioState extends State<NovoRastreio> {
                   style: TextStyle(fontSize: 30),
                 ),
                 SizedBox(height: 40),
-                SizedBox(
-                  height: 60, // Adjust the height as needed
-                  child: FormBuilderDateTimePicker(
-                    name: 'testDate',
-                    inputType: InputType.date,
-                    decoration: InputDecoration(
-                      labelText: 'Test Date',
-                      prefixIcon: Icon(Icons.calendar_today),
-                    ),
-                    validator: FormBuilderValidators.required(),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Test Date',
+                    prefixIcon: Icon(Icons.calendar_today),
+                  ),
+                  onTap: () async {
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2022),
+                      lastDate: DateTime(2025),
+                    );
+                    if (pickedDate != null && pickedDate != selectedTestDate) {
+                      setState(() {
+                        selectedTestDate = pickedDate;
+                      });
+                    }
+                  },
+                  validator: (value) {
+                    if (selectedTestDate == null) {
+                      return 'Please select a test date';
+                    }
+                    return null;
+                  },
+                  readOnly: true,
+                  controller: TextEditingController(
+                    text: selectedTestDate != null
+                        ? "${selectedTestDate!.toLocal()}".split(' ')[0]
+                        : '',
                   ),
                 ),
-                SizedBox(height: 40), // Add spacing here
-                SizedBox(
-                  height: 60, // Adjust the height as needed
-                  child: FormBuilderDateTimePicker(
-                    name: 'resultDate',
-                    inputType: InputType.date,
-                    decoration: InputDecoration(
-                      labelText: 'Result Date',
-                      prefixIcon: Icon(Icons.calendar_today),
-                    ),
-                    validator: FormBuilderValidators.required(),
+                SizedBox(height: 40),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Result Date',
+                    prefixIcon: Icon(Icons.calendar_today),
+                  ),
+                  onTap: () async {
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2022),
+                      lastDate: DateTime(2025),
+                    );
+                    if (pickedDate != null && pickedDate != selectedResultDate) {
+                      setState(() {
+                        selectedResultDate = pickedDate;
+                      });
+                    }
+                  },
+                  validator: (value) {
+                    if (selectedResultDate == null) {
+                      return 'Please select a result date';
+                    }
+                    return null;
+                  },
+                  readOnly: true,
+                  controller: TextEditingController(
+                    text: selectedResultDate != null
+                        ? "${selectedResultDate!.toLocal()}".split(' ')[0]
+                        : '',
                   ),
                 ),
-                SizedBox(height: 40), // Add spacing here
+                SizedBox(height: 40),
                 Text(
                   'Result',
                   style: TextStyle(fontSize: 19),
@@ -106,27 +144,29 @@ class _NovoRastreioState extends State<NovoRastreio> {
                     ),
                   ],
                 ),
-                SizedBox(height: 40), // Add spacing here
-                FormBuilderDropdown<int>(
-                  name: 'testLocation',
-                  decoration: InputDecoration(labelText: 'Test Location'),
+                SizedBox(height: 40),
+                DropdownButtonFormField<int>(
                   items: [1, 2]
                       .map((value) => DropdownMenuItem(
                     value: value,
                     child: Text('Option $value'),
                   ))
                       .toList(),
-                  validator: FormBuilderValidators.required(),
+                  decoration: InputDecoration(labelText: 'Test Location'),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select a test location';
+                    }
+                    return null;
+                  }, onChanged: (int? value) {  },
                 ),
-                SizedBox(height: 50), // Add spacing here
+                SizedBox(height: 50),
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      if (_fbKey.currentState!.saveAndValidate()) {
-                        final values = _fbKey.currentState!.value;
-                        final testDate = values['testDate'];
-                        final resultDate = values['resultDate'];
-                        final testLocation = values['testLocation'];
+                      if (_formKey.currentState!.validate()) {
+                        // Form is valid, proceed with saving
+                        final testLocation = 1; // Replace with form value
 
                         if (result == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -137,14 +177,15 @@ class _NovoRastreioState extends State<NovoRastreio> {
 
                         final newRastreio = TestModel.Test(
                           diagnosis: result!,
-                          testDate: testDate,
-                          resultDate: resultDate,
+                          testDate: selectedTestDate,
+                          resultDate: selectedResultDate,
                           result: result,
                           testLocation: testLocation,
                           patient: patient!,
                         );
 
-                        await appatiteRepo.insertNewTest(user!, newRastreio, patient);
+                        await appatiteRepo.insertNewTest(
+                            user!, newRastreio, patient);
 
                         Navigator.push(
                           context,
