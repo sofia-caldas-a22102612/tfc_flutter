@@ -30,14 +30,18 @@ class _MainPageState extends State<MainPage>{
 
   Scaffold buildBottomBar(Session session) {
     return Scaffold(
-        appBar: AppBar(title: Text(pages[_selectedIndex].title),
-        actions: [
-          PopupMenuButton(
-            icon: Icon(Icons.person),
-            itemBuilder: (context) => [PopupMenuItem(value: 0, child: Text('Sair'))],
-            onSelected: (index) => session.user = null,
-          )
-        ],),
+        appBar: AppBar(
+          title: Text(
+            pages[_selectedIndex].title,
+            style: TextStyle(fontWeight: FontWeight.bold), // Bold title
+          ),
+          actions: [
+            PopupMenuButton(
+              icon: Icon(Icons.person),
+              itemBuilder: (context) => [PopupMenuItem(value: 0, child: Text('Sair'))],
+              onSelected: (index) => session.user = null,
+            )
+          ],),
         body: pages[_selectedIndex].widget,
         bottomNavigationBar: NavigationBar(
           selectedIndex: _selectedIndex,

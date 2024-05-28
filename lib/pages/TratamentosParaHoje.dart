@@ -49,10 +49,12 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Sem Tratamentos Ativos',
-                    style: TextStyle(
-                      fontSize: 20,
+                  Center(
+                    child: Text(
+                      'Sem Tratamentos Ativos',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ],

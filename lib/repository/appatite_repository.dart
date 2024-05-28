@@ -70,6 +70,25 @@ class AppatiteRepository {
   }
 
 
+  Enum stringToPatientStatus(str) {
+    switch (str) {
+      case "NED":
+        return PatientStatus.NED;
+      case "POSITIVE_SCREENING_DIAGNOSIS":
+        return PatientStatus.POSITIVE_SCREENING_DIAGNOSIS;
+      case "POSITIVE_DIAGNOSIS":
+        return PatientStatus.POSITIVE_DIAGNOSIS;
+      case "TREATMENT":
+        return PatientStatus.TREATMENT;
+      case "POST_TREATMENT_ANALYSIS":
+        return PatientStatus.POST_TREATMENT_ANALYSIS;
+      case "FINISHED":
+        return PatientStatus.FINISHED;
+      default:
+        return PatientStatus.NOT_IN_DATABASE;
+    }
+  }
+
 
   Future<String?> getPatientState(User sessionOwner, Patient patient) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
@@ -167,7 +186,7 @@ class AppatiteRepository {
   }
 
 
-  //todo get rid of this and fetch state from API
+//todo get rid of this and fetch state from API
 
 
 }

@@ -4,50 +4,103 @@ import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/pages/main.page.dart';
 import 'package:tfc_flutter/patientPages/states/testPages/rastreio/novoRastreio.dart';
+import 'package:tfc_flutter/repository/appatite_repository.dart';
 
 import '../../patientPages.dart';
 
-
-class PaginaNED extends StatelessWidget {
-
+class PaginaNED extends StatefulWidget {
   // Constructor with required patient parameter
-  const PaginaNED ({super.key});
+  const PaginaNED({super.key});
+
+  @override
+  _PaginaNEDState createState() => _PaginaNEDState();
+}
+
+class _PaginaNEDState extends State<PaginaNED> {
+  Widget _buildContent(Enum status) {
+    switch (status) {
+      case PatientStatus.NOT_IN_DATABASE:
+        return Center(
+          child: Text(
+            'Dados não estão na database',
+            style: TextStyle(color: Colors.black, fontSize: 30),
+          ),
+        );
+      case PatientStatus.NED:
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black26),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  'Resultado do Último Rastreio',
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+              SizedBox(height: 16), // Add some space between the boxes
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black26),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  'Negativo',
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ],
+          ),
+        );
+      default:
+        return Container();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final session = context.watch<Session>();
-    Patient? patient = session.patient;
+    final appatiteRepo = AppatiteRepository();
+    final patient = session.patient;
+    final user = session.user;
+
+    // Check the patient's status
+    var status = appatiteRepo.getPatientState(user!, patient!);
+    var stausEnum = appatiteRepo.stringToPatientStatus(status);
 
 
-    return Column(
-
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: Text('Resultado do Último Rastreio: Negativo',
-            style: TextStyle(color: Colors.black26, fontSize: 30),
-          ),
-        ),
-        Expanded(child: Container()), // Add empty container to push button to the bottom
-        Padding(
-
-          padding: const EdgeInsets.all(16.0),
-          child: TextButton(
-            onPressed: () {
-              // Navigate to the NovoRastreio page when the button is pressed
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NovoRastreio(), // change PatientState
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildContent(stausEnum),
+              SizedBox(height: 32), // Add spacing before the button
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to the NovoRastreio page when the button is pressed
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NovoRastreio(), // change PatientState
+                      ),
+                    );
+                  },
+                  child: Text('Adicionar Novo Rastreio'),
                 ),
-              );
-            },
-            child: Text('Adicionar Novo Rastreio'),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
-
-//todo adicionar if statement sobre se paciente não existe na base de dados ou se ja acabou tratamento

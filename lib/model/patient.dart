@@ -23,7 +23,7 @@ class Patient {
   DateTime _birthDate;
   GenderType _gender;
   String? _realId;
-  int? _documentType;
+  String? _documentType;
   String? _lastProgramName;
   DateTime? _lastProgramDate;
   int? _userId;
@@ -79,7 +79,6 @@ class Patient {
       this._documentType,
       this._lastProgramName,
       this._lastProgramDate,
-      this._userId
       );
 
   void updatePatientState(PatientStatus status) {
@@ -152,7 +151,7 @@ class Patient {
   }
 
   // Getter method for documentType
-  int? getDocumentType() {
+  String? getDocumentType() {
     return _documentType;
   }
 
@@ -205,11 +204,20 @@ class Patient {
     }
   }
 
+  Map<String, dynamic> toJsonZeus() {
+    return {
+      'idZeus': _idZeus,
+      'name': _name,
+      'birthDate': _birthDate.toIso8601String(),
+      'gender': _gender == GenderType.male ? 'Masculino' : 'Feminino',
+    };
+  }
+
   Patient.fromJsonZeus(Map<String, dynamic> json)
-      : _idZeus = json['utente_id'] as int,
-        _name = json['utente_nome'],
-        _birthDate = DateTime.parse(json['utente_data_nascimento'] as String),
-        _gender = json['utente_genero'] == 'Masculino' ? GenderType.male : GenderType.female;
+      : _idZeus = json['idZeus'] as int,
+        _name = json['name'],
+        _birthDate = DateTime.parse(json['birthDate'] as String),
+        _gender = json['gender'] == 'Masculino' ? GenderType.male : GenderType.female;
 
 
   Patient.fromJson(Map<String, dynamic> json)
@@ -219,7 +227,7 @@ class Patient {
         _birthDate = DateTime.parse(json['birthDate'] as String),
         _gender = GenderType.values[json['gender'] as int],
         _realId = json['realId'] as String?, // Ensure this matches your data type
-        _documentType = json['documentType'] as int?,
+        _documentType = json['documentType'] as String?,
         _lastProgramName = json['lastProgramName'] as String?,
         _lastProgramDate = json['lastProgramDate'] != null
             ? DateTime.parse(json['lastProgramDate'] as String)
@@ -255,5 +263,25 @@ class Patient {
     };
   }
 
+
+
+  Enum stringToPatientStatus(str) {
+    switch (str) {
+      case "NED":
+        return PatientStatus.NED;
+      case "POSITIVE_SCREENING_DIAGNOSIS":
+        return PatientStatus.POSITIVE_SCREENING_DIAGNOSIS;
+      case "POSITIVE_DIAGNOSIS":
+        return PatientStatus.POSITIVE_DIAGNOSIS;
+      case "TREATMENT":
+        return PatientStatus.TREATMENT;
+      case "POST_TREATMENT_ANALYSIS":
+        return PatientStatus.POST_TREATMENT_ANALYSIS;
+      case "FINISHED":
+        return PatientStatus.FINISHED;
+      default:
+        return PatientStatus.NOT_IN_DATABASE;
+    }
+  }
 
 }

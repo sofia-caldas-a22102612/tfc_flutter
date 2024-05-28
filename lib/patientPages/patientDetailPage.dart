@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/model/patient.dart';
 
@@ -28,12 +29,14 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
           _buildDetailItem('ID interno', patient.getIdZeus().toString()),
           _buildDetailItem('CC', patient.getCC() ?? ''),
           _buildDetailItem('Género', patient.getGender() == GenderType.male ? 'Masculino' : 'Feminino'),
-          _buildDetailItem('Data de nascimento', patient.getBirthdate().toString()),
+          _buildDetailItem('Data de nascimento', DateFormat('yyyy-MM-dd').format(patient.getBirthdate())),
           _buildDetailItem('ID', patient.getRealId()?.toString() ?? 'N/A'),
           _buildDetailItem('Tipo de documento', patient.getDocumentType()?.toString() ?? 'N/A'),
           _buildDetailItem('Último programa', patient.getLastProgramName() ?? 'N/A'),
-          _buildDetailItem('Data do último programa', patient.getLastProgramDate()?.toString() ?? 'N/A'),
-        ].expand((widget) => [widget, SizedBox(height: 8), Divider(), SizedBox(height: 8)]).toList(), // Add SizedBox for spacing
+          if (patient.getLastProgramDate() != null)
+            _buildDetailItem('Data do último programa', DateFormat('yyyy-MM-dd').format(patient.getLastProgramDate()!)),
+
+    ].expand((widget) => [widget, SizedBox(height: 8), Divider(), SizedBox(height: 8)]).toList(), // Add SizedBox for spacing
       ),
     );
   }
