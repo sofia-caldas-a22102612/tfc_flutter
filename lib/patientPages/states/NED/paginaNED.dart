@@ -71,7 +71,7 @@ class _PaginaNEDState extends State<PaginaNED> {
 
     // Check the patient's status
     var status = appatiteRepo.getPatientState(user!, patient!);
-    var stausEnum = appatiteRepo.stringToPatientStatus(status);
+    var statusEnum = appatiteRepo.stringToPatientStatus(status);
 
 
     return Scaffold(
@@ -80,7 +80,7 @@ class _PaginaNEDState extends State<PaginaNED> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildContent(stausEnum),
+              _buildContent(statusEnum),
               SizedBox(height: 32), // Add spacing before the button
               Padding(
                 padding: const EdgeInsets.all(16.0),
