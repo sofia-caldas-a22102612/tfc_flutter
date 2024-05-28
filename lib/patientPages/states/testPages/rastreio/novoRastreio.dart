@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart' as TestModel;
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
-
 
 class NovoRastreio extends StatefulWidget {
   const NovoRastreio({Key? key}) : super(key: key);
@@ -29,7 +28,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Novo Rastreio (${session.patient?.getName()})'),
+        title: Text('Novo Rastreio (${patient?.getName() ?? ''})'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -54,15 +53,10 @@ class _NovoRastreioState extends State<NovoRastreio> {
                       labelText: 'Test Date',
                       prefixIcon: Icon(Icons.calendar_today),
                     ),
-                    onChanged: (DateTime? value) {
-                      // Handle changes if needed
-                    },
-                    //todo add validator
+                    validator: FormBuilderValidators.required(),
                   ),
                 ),
-
                 SizedBox(height: 40), // Add spacing here
-
                 SizedBox(
                   height: 60, // Adjust the height as needed
                   child: FormBuilderDateTimePicker(
@@ -72,15 +66,10 @@ class _NovoRastreioState extends State<NovoRastreio> {
                       labelText: 'Result Date',
                       prefixIcon: Icon(Icons.calendar_today),
                     ),
-                    onChanged: (DateTime? value) {
-                      // Handle changes if needed
-                    },
-                    //todo add validator
+                    validator: FormBuilderValidators.required(),
                   ),
                 ),
-
                 SizedBox(height: 40), // Add spacing here
-
                 Text(
                   'Result',
                   style: TextStyle(fontSize: 19),
@@ -117,9 +106,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                     ),
                   ],
                 ),
-
                 SizedBox(height: 40), // Add spacing here
-
                 FormBuilderDropdown<int>(
                   name: 'testLocation',
                   decoration: InputDecoration(labelText: 'Test Location'),
@@ -129,26 +116,27 @@ class _NovoRastreioState extends State<NovoRastreio> {
                     child: Text('Option $value'),
                   ))
                       .toList(),
-                  onChanged: (int? value) {
-                    // Handle changes if needed
-                  },
-                  //todo add validator
+                  validator: FormBuilderValidators.required(),
                 ),
-
                 SizedBox(height: 50), // Add spacing here
-
-                Center( // Wrap the button with Center widget
+                Center(
                   child: ElevatedButton(
                     onPressed: () async {
                       if (_fbKey.currentState!.saveAndValidate()) {
                         final values = _fbKey.currentState!.value;
-                        final positiveDiagnosis = values['result'] == true;
                         final testDate = values['testDate'];
                         final resultDate = values['resultDate'];
                         final testLocation = values['testLocation'];
 
+                        if (result == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Please select a result')),
+                          );
+                          return;
+                        }
+
                         final newRastreio = TestModel.Test(
-                          diagnosis: positiveDiagnosis,
+                          diagnosis: result!,
                           testDate: testDate,
                           resultDate: resultDate,
                           result: result,
@@ -156,13 +144,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                           patient: patient!,
                         );
 
-
-                        //patient.updatePatientState(PatientStatus.POSITIVE_SCREENING_DIAGNOSIS);
-
                         await appatiteRepo.insertNewTest(user!, newRastreio, patient);
-
-                        //patient.addRastreio(newRastreio);
-                        //patient.addTest(newRastreio);
 
                         Navigator.push(
                           context,

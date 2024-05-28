@@ -47,7 +47,8 @@ class AppatiteRepository {
       'resultDate': newTest.resultDate?.toIso8601String(),
       'testLocation': newTest.testLocation,
       'testDate': newTest.testDate?.toIso8601String(),
-      'patient': patient.toJson(), // Use toJson method of Patient class
+      'patient': patient.toJson(), // Ensure this matches PatientRequest
+      'patientStatus': patient.getPatientStateString()
     };
 
     final Response response = await http.post(
