@@ -14,25 +14,11 @@ class PaginaTesteDiagnostico extends StatefulWidget {
 }
 
 class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
-  late Future<String?> _patientStateFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _patientStateFuture = _fetchPatientState();
-  }
-
-  Future<String?> _fetchPatientState() async {
-    final session = context.read<Session>();
-    final appatiteRepository = context.read<AppatiteRepository>();
-    final patient = session.patient;
-
-    return appatiteRepository.getPatientState(session.user!, patient!);
-  }
 
   @override
   Widget build(BuildContext context) {
-    final session = context.watch<Session>();
+    final session = context.read<Session>();
+    final appatiteRepository = context.read<AppatiteRepository>();
     final patient = session.patient;
 
     return Scaffold(
@@ -42,7 +28,7 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
           children: [
             Expanded(
               child: FutureBuilder<String?>(
-                future: _patientStateFuture,
+                future: appatiteRepository.getPatientState(session.user!, patient!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Display a loading indicator while waiting for the future
@@ -51,9 +37,9 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
                     // Handle error
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    // Data has been received successfully
+                    // Data has been received successfullynão t
                     final patientState = snapshot.data!;
-                    if (patientState == PatientStatus.POSITIVE_DIAGNOSIS.toString()) {
+                    if (patientState == PatientStatus.POSITIVE_DIAGNOSIS.name) {
                       // Render the list of tests
                       return ListView.builder(
                         itemCount: 10, // Replace 10 with the actual number of tests
@@ -82,7 +68,7 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
             ElevatedButton(
               onPressed: () {
                 // Change the PatientState to indicate treatment has started
-                patient!.updatePatientState(PatientStatus.TREATMENT);
+                patient.updatePatientState(PatientStatus.TREATMENT);
                 // Navigate to the main patient page
                 Navigator.push(
                   context,
