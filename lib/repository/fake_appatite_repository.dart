@@ -2,6 +2,7 @@ import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 import '../model/patient.dart';
+import '../model/patient_state.dart';
 import '../model/user.dart';
 
 class FakeAppatiteRepository extends AppatiteRepository {
@@ -95,8 +96,8 @@ class FakeAppatiteRepository extends AppatiteRepository {
   }
 
 
-  Future<String> getPatientState(User sessionOwner, Patient patient) async {
-    final patientState = patient.getPatientStateString(); // Assuming getStatus() returns the patient state directly
+  Future<PatientState?> getPatientState(User sessionOwner, Patient patient) async {
+    final patientState = PatientState(patient.getPatientStateString(), patient.patientStatusDate); // Assuming getStatus() returns the patient state directly
     print('Patient State: $patientState'); // Debug print
     return patientState;
   }

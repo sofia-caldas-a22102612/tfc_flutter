@@ -41,9 +41,9 @@ class _NovoDiagnosticoState extends State<NovoDiagnostico> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                patient!.updatePatientState(PatientStatus.TREATMENT);
+                patient!.updatePatientState(PatientStatus.TREATMENT, null);
                 // Change the PatientState to indicate treatment has started
-                patient!.updatePatientState(PatientStatus.TREATMENT);
+                patient!.updatePatientState(PatientStatus.TREATMENT, null);
                 // Navigate to the main patient page
                 Navigator.push(
                   context,

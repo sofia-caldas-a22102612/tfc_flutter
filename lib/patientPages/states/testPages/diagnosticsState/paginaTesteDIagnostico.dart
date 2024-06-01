@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
+import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaEditarDiagnostico.dart';
@@ -27,7 +28,7 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: FutureBuilder<String?>(
+              child: FutureBuilder<PatientState?>(
                 future: appatiteRepository.getPatientState(session.user!, patient!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -39,7 +40,7 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
                   } else {
                     // Data has been received successfullynão t
                     final patientState = snapshot.data!;
-                    if (patientState == PatientStatus.POSITIVE_DIAGNOSIS.name) {
+                    if (patientState.status == PatientStatus.POSITIVE_DIAGNOSIS.name) {
                       // Render the list of tests
                       return ListView.builder(
                         itemCount: 10, // Replace 10 with the actual number of tests
@@ -48,7 +49,7 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
                           return TestWidget(testData: 'Test ${index + 1}');
                         },
                       );
-                    } else if (patientState == PatientStatus.POSITIVE_SCREENING.toString()) {
+                    } else if (patientState.status == PatientStatus.POSITIVE_SCREENING.name) {
                       // Render the button only if patient status is "TREATMENT"
                       return ElevatedButton(
                         onPressed: () {
@@ -68,7 +69,7 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
             ElevatedButton(
               onPressed: () {
                 // Change the PatientState to indicate treatment has started
-                patient.updatePatientState(PatientStatus.TREATMENT);
+                patient.updatePatientState(PatientStatus.TREATMENT, null);
                 // Navigate to the main patient page
                 Navigator.push(
                   context,

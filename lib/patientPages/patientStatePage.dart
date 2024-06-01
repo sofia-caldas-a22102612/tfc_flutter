@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
+import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/patientPages/states/NED/paginaNED.dart';
 import 'package:tfc_flutter/patientPages/states/Tratamento/paginaTratamento.dart';
 import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/novoDiagnostico.dart';
@@ -28,7 +29,7 @@ class _PatientStatePageState extends State<PatientStatePage> {
     final patient = session.patient;
     final user = session.user;
 
-    return FutureBuilder<String?>(
+    return FutureBuilder<PatientState?>(
       future: repository.getPatientState(user!, patient!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -38,37 +39,37 @@ class _PatientStatePageState extends State<PatientStatePage> {
         } else if (!snapshot.hasData) {
           return Center(child: Text('No patient state found.'));
         } else {
-          final patientState = snapshot.data;
+          final patientState = snapshot.data!;
           print('Patient State: $patientState'); // Debug print
 
           Widget nextPage;
-          switch (patientState) {
+          switch (patientState.status) {
             case 'NED':
-              patient.updatePatientState(PatientStatus.NED);
+              patient.updatePatientState(PatientStatus.NED, patientState.statusDate);
               nextPage = PaginaNED();
               break;
             case 'NOT_IN_DATABASE':
-              patient.updatePatientState(PatientStatus.NOT_IN_DATABASE);
+              patient.updatePatientState(PatientStatus.NOT_IN_DATABASE, null);
               nextPage = PaginaNED();
               break;
             case 'POSITIVE_SCREENING':
-              patient.updatePatientState(PatientStatus.POSITIVE_SCREENING);
+              patient.updatePatientState(PatientStatus.POSITIVE_SCREENING, patientState.statusDate);
               nextPage = NovoDiagnostico();
               break;
             case 'POSITIVE_DIAGNOSIS':
-              patient.updatePatientState(PatientStatus.POSITIVE_DIAGNOSIS);
+              patient.updatePatientState(PatientStatus.POSITIVE_DIAGNOSIS, patientState.statusDate);
               nextPage = PaginaTesteDiagnostico();
               break;
             case 'TREATMENT':
-              patient.updatePatientState(PatientStatus.TREATMENT);
+              patient.updatePatientState(PatientStatus.TREATMENT, patientState.statusDate);
               nextPage = PaginaTratamento();
               break;
             case 'POST_TREATMENT_ANALYSIS':
-              patient.updatePatientState(PatientStatus.POST_TREATMENT_ANALYSIS);
+              patient.updatePatientState(PatientStatus.POST_TREATMENT_ANALYSIS, patientState.statusDate);
               nextPage = PaginaTratamento();
               break;
             case 'FINISHED':
-              patient.updatePatientState(PatientStatus.FINISHED);
+              patient.updatePatientState(PatientStatus.FINISHED, patientState.statusDate);
               nextPage = PaginaNED();
               break;
             default:

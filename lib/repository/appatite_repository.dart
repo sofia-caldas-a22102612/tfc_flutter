@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:tfc_flutter/model/patient.dart';
+import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/model/user.dart';
 import 'package:tfc_flutter/util/http.dart';
@@ -91,7 +92,7 @@ class AppatiteRepository {
   }
 
 
-  Future<String?> getPatientState(User sessionOwner, Patient patient) async {
+  Future<PatientState?> getPatientState(User sessionOwner, Patient patient) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final id = patient.getIdZeus().toString();
     final response = await http.get(
@@ -101,7 +102,7 @@ class AppatiteRepository {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return data['status']?.toUpperCase();
+      return PatientState.fromJson(data);
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {

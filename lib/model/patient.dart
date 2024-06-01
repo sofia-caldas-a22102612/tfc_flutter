@@ -29,6 +29,7 @@ class Patient {
   int? _userId;
   Test? _lastScreening; // Assuming Test is a valid class representing the last screening
   PatientStatus? _patientStatus;
+  DateTime? _patientStatusDate;
   List<Treatment>? _treatmentList; // Use the prefix for the Treatment class
   Treatment? _currentTreatment;
   HashSet<Test>? _testList; // Use the prefix for the Test class
@@ -81,8 +82,9 @@ class Patient {
       this._lastProgramDate,
       );
 
-  void updatePatientState(PatientStatus status) {
+  void updatePatientState(PatientStatus status, DateTime? statusDate) {
     _patientStatus = status;
+    _patientStatusDate = statusDate;
   }
 
   void addRastreio(Test rastreio) {
@@ -134,6 +136,7 @@ class Patient {
     return getPatientState()!.toString().split('.').last; // Return the enum value without the enum type prefix
   }
 
+  DateTime? get patientStatusDate => _patientStatusDate;
 
   // Getter method for age
   DateTime getBirthdate() {

@@ -158,7 +158,7 @@ class _IniciarTratamentoState extends State<IniciarTratamento> {
                         );
 
 
-                        patient.updatePatientState(PatientStatus.TREATMENT);
+                        patient.updatePatientState(PatientStatus.TREATMENT, null);
 
 
                         await appatiteRepo.insertNewTest(user!, newRastreio, patient);
