@@ -284,7 +284,7 @@ packages:
     source: hosted
     version: "4.0.2"
   intl:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: intl
       sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
@@ -428,7 +428,7 @@ packages:
     source: hosted
     version: "1.5.1"
   pretty_http_logger:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: pretty_http_logger
       sha256: a8bafed5e19c58d0082c71bf6ac9e26e2cf38cfb5428415283127bf23a2a6e50
