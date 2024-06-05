@@ -141,7 +141,6 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                         final diagnosis = true;
 
                         final newDiagnosis = TestModel.Test(
-                          diagnosis: diagnosis,
                           testDate: testDate,
                           resultDate: resultDate,
                           result: result,
@@ -149,7 +148,7 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                           patient: patient!,
                         );
 
-                        appatiteRepo.insertNewTest(user!, newDiagnosis, patient);
+                        appatiteRepo.insertNewTest(user!, newDiagnosis, patient!);
 
                         Navigator.push(
                           context,

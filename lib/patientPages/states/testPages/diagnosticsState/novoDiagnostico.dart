@@ -43,7 +43,7 @@ class _NovoDiagnosticoState extends State<NovoDiagnostico> {
               onPressed: () {
                 patient!.updatePatientState(PatientStatus.TREATMENT, null);
                 // Change the PatientState to indicate treatment has started
-                patient!.updatePatientState(PatientStatus.TREATMENT, null);
+                patient.updatePatientState(PatientStatus.TREATMENT, null);
                 // Navigate to the main patient page
                 Navigator.push(
                   context,

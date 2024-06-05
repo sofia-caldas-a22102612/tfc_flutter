@@ -149,7 +149,6 @@ class _IniciarTratamentoState extends State<IniciarTratamento> {
                         final testLocation = values['testLocation'];
 
                         final newRastreio = TestModel.Test(
-                          diagnosis: positiveDiagnosis,
                           testDate: testDate,
                           resultDate: resultDate,
                           result: result,

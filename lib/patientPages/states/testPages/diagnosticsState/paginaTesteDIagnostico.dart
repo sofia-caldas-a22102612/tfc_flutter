@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/model/session.dart';
+import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
-import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaEditarDiagnostico.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
 class PaginaTesteDiagnostico extends StatefulWidget {
@@ -15,12 +15,12 @@ class PaginaTesteDiagnostico extends StatefulWidget {
 }
 
 class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
-
   @override
   Widget build(BuildContext context) {
     final session = context.read<Session>();
     final appatiteRepository = context.read<AppatiteRepository>();
     final patient = session.patient;
+    final user = session.user;
 
     return Scaffold(
       body: Center(
@@ -32,25 +32,31 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
                 future: appatiteRepository.getPatientState(session.user!, patient!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    // Display a loading indicator while waiting for the future
                     return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
-                    // Handle error
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    // Data has been received successfullynão t
                     final patientState = snapshot.data!;
                     if (patientState.status == PatientStatus.POSITIVE_DIAGNOSIS.name) {
-                      // Render the list of tests
-                      return ListView.builder(
-                        itemCount: 10, // Replace 10 with the actual number of tests
-                        itemBuilder: (context, index) {
-                          // Replace TestWidget with the widget to display each test
-                          return TestWidget(testData: 'Test ${index + 1}');
+                      return FutureBuilder<Test>(
+                        future: appatiteRepository.getCurrentTest(session.user!, patient.getIdZeus()),
+                        builder: (context, testSnapshot) {
+                          if (testSnapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (testSnapshot.hasError || testSnapshot.data == null) {
+                            return Text('Error fetching test data');
+                          } else {
+                            final test = testSnapshot.data!;
+                            return ListView.builder(
+                              itemCount: 1,
+                              itemBuilder: (context, index) {
+                                return TestWidget(test: test);
+                              },
+                            );
+                          }
                         },
                       );
                     } else if (patientState.status == PatientStatus.POSITIVE_SCREENING.name) {
-                      // Render the button only if patient status is "TREATMENT"
                       return ElevatedButton(
                         onPressed: () {
                           // Handle the action for starting a new screening
@@ -58,7 +64,6 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
                         child: Text('Novo Diagnóstico'),
                       );
                     } else {
-                      // Render an empty container if patient status is not "TREATMENT" or "POSITIVE_DIAGNOSIS"
                       return SizedBox.shrink();
                     }
                   }
@@ -68,9 +73,7 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Change the PatientState to indicate treatment has started
-                patient.updatePatientState(PatientStatus.TREATMENT, null);
-                // Navigate to the main patient page
+                appatiteRepository.updatePatientStatus(user!, patient.getIdZeus(), PatientStatus.TREATMENT.name);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -88,15 +91,21 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
 }
 
 class TestWidget extends StatelessWidget {
-  final String testData;
+  final Test test;
 
-  const TestWidget({Key? key, required this.testData}) : super(key: key);
+  const TestWidget({Key? key, required this.test}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(testData),
-      // Add more widgets to display additional test information
+      title: Text('Test Type: ${test.type ?? ''}'),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Test Date: ${test.testDate?.toString() ?? ''}'),
+          Text('Result: ${test.result ?? ''}'),
+        ],
+      ),
     );
   }
 }

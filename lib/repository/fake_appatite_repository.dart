@@ -1,4 +1,4 @@
-import 'package:tfc_flutter/model/gender_type.dart';
+/*import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 import '../model/patient.dart';
@@ -38,7 +38,7 @@ class FakeAppatiteRepository extends AppatiteRepository {
         Test.rastreio(
           id: 123,
           diagnosis: false,
-          type: 1,
+          //type: 1,
           testDate: DateTime.parse('2024-04-13T08:00:00Z'),
           resultDate: DateTime.parse('2024-04-15T08:00:00Z'),
           result: true,
@@ -81,7 +81,7 @@ class FakeAppatiteRepository extends AppatiteRepository {
         Test.rastreio(
           id: 123,
           diagnosis: false,
-          type: 1,
+          //type: 1,
           testDate: DateTime.parse('2024-04-13T08:00:00Z'),
           resultDate: DateTime.parse('2024-04-15T08:00:00Z'),
           result: true,
@@ -137,3 +137,4 @@ class FakeAppatiteRepository extends AppatiteRepository {
 
 
 }
+*/

@@ -1,64 +1,81 @@
 import 'package:tfc_flutter/model/patient.dart';
 
-
 class Test {
   int? id;
-  bool? diagnosis;
   int? type;
   DateTime? testDate;
   DateTime? resultDate;
   bool? result;
   int? testLocation;
-  Patient? patient;
+  Patient patient;
 
   Test({
     this.id,
-    this.diagnosis = true,
     this.type,
     this.testDate,
     this.resultDate,
     this.result,
     this.testLocation,
-    this.patient,
+    required this.patient,
   });
-
 
   Test.rastreio({
     this.id,
-    this.diagnosis = false,
     this.type,
     this.testDate,
     this.resultDate,
     this.result,
     this.testLocation,
-    this.patient,
+    required this.patient,
   });
+
+
+  String getLocationString() {
+    switch (testLocation) {
+      case 1:
+        return 'Instalações Adp';
+      case 2:
+        return 'Hospital';
+      case 3:
+        return 'Unidade Móvel';
+      default:
+        return 'Por Definir';
+    }
+  }
+
+  String getTypeString() {
+    switch (type) {
+      case 1:
+        return 'Rastreio';
+      case 0:
+        return 'Diagnóstico';
+      default:
+        return 'Por Definir';
+    }
+  }
+
 
   factory Test.fromJson(Map<String, dynamic> json) {
     return Test(
       id: json['id'],
-      diagnosis: json['diagnosis'],
       type: json['type'],
       testDate: json['testDate'] != null ? DateTime.parse(json['testDate']) : null,
       resultDate: json['resultDate'] != null ? DateTime.parse(json['resultDate']) : null,
       result: json['result'],
       testLocation: json['testLocation'],
-      patient: json['patient'] != null ? Patient.fromJson(json['patient']) : null,
+      patient: Patient.fromJson(json['patient']), // No need for null check as patient is required
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['diagnosis'] = diagnosis;
     data['type'] = type;
     data['testDate'] = testDate?.toIso8601String();
     data['resultDate'] = resultDate?.toIso8601String();
     data['result'] = result;
     data['testLocation'] = testLocation;
-    data['patient'] = patient?.toJson();
+    data['patient'] = patient.toJson();
     return data;
   }
-
-
 
 }

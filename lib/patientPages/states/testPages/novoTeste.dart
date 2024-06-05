@@ -17,6 +17,8 @@ class _NovoRastreioState extends State<NovoRastreio> {
   DateTime? selectedTestDate;
   DateTime? selectedResultDate;
   bool? result;
+  int? testLocation;
+  int? testType;
   Color positiveButtonColor = Colors.transparent;
   Color negativeButtonColor = Colors.transparent;
 
@@ -29,7 +31,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Novo Rastreio (${patient?.getName() ?? ''})'),
+        title: Text('Novo Teste (${patient!.getName()})'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -46,7 +48,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                 SizedBox(height: 40),
                 TextFormField(
                   decoration: InputDecoration(
-                    labelText: 'Test Date',
+                    labelText: 'Data do Teste',
                     prefixIcon: Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
@@ -64,7 +66,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                   },
                   validator: (value) {
                     if (selectedTestDate == null) {
-                      return 'Please select a test date';
+                      return 'Selecione data do teste';
                     }
                     return null;
                   },
@@ -78,7 +80,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                 SizedBox(height: 40),
                 TextFormField(
                   decoration: InputDecoration(
-                    labelText: 'Result Date',
+                    labelText: 'Data do Resultado',
                     prefixIcon: Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
@@ -96,7 +98,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                   },
                   validator: (value) {
                     if (selectedResultDate == null) {
-                      return 'Please select a result date';
+                      return 'Selecione data do resultado';
                     }
                     return null;
                   },
@@ -109,7 +111,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                 ),
                 SizedBox(height: 40),
                 Text(
-                  'Result',
+                  'Resultado',
                   style: TextStyle(fontSize: 19),
                 ),
                 Row(
@@ -123,7 +125,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                           negativeButtonColor = Colors.transparent;
                         });
                       },
-                      child: Text('Positive'),
+                      child: Text('Positivo'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: positiveButtonColor,
                       ),
@@ -137,7 +139,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                           positiveButtonColor = Colors.transparent;
                         });
                       },
-                      child: Text('Negative'),
+                      child: Text('Negativo'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: negativeButtonColor,
                       ),
@@ -146,42 +148,77 @@ class _NovoRastreioState extends State<NovoRastreio> {
                 ),
                 SizedBox(height: 40),
                 DropdownButtonFormField<int>(
-                  items: [1, 2]
-                      .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text('Option $value'),
-                  ))
-                      .toList(),
-                  decoration: InputDecoration(labelText: 'Test Location'),
+                  items: [
+                    DropdownMenuItem(
+                      value: 1,
+                      child: Text('Instalações Adp'),
+                    ),
+                    DropdownMenuItem(
+                      value: 2,
+                      child: Text('Hospital'),
+                    ),
+                    DropdownMenuItem(
+                      value: 3,
+                      child: Text('Unidade Móvel'),
+                    ),
+                  ],
+                  decoration: InputDecoration(labelText: 'Local do Teste'),
                   validator: (value) {
                     if (value == null) {
-                      return 'Please select a test location';
+                      return 'Selecione local do teste';
                     }
                     return null;
-                  }, onChanged: (int? value) {  },
+                  },
+                  onChanged: (int? value) {
+                    setState(() {
+                      testLocation = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 40),
+                DropdownButtonFormField<int>(
+                  items: [
+                    DropdownMenuItem(
+                      value: 1,
+                      child: Text('Rastreio'),
+                    ),
+                    DropdownMenuItem(
+                      value: 0,
+                      child: Text('Diagnostico'),
+                    ),
+                  ],
+                  decoration: InputDecoration(labelText: 'Tipo de Teste'),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Selecione Tipo de Teste';
+                    }
+                    return null;
+                  },
+                  onChanged: (int? value) {
+                    setState(() {
+                      testType = value;
+                    });
+                  },
                 ),
                 SizedBox(height: 50),
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        // Form is valid, proceed with saving
-                        final testLocation = 1; // Replace with form value
-
                         if (result == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Please select a result')),
+                            SnackBar(content: Text('Selecione Resultado')),
                           );
                           return;
                         }
 
                         final newRastreio = TestModel.Test(
-                          diagnosis: result!,
+                          type: testType,
                           testDate: selectedTestDate,
                           resultDate: selectedResultDate,
                           result: result,
                           testLocation: testLocation,
-                          patient: patient!,
+                          patient: patient,
                         );
 
                         await appatiteRepo.insertNewTest(

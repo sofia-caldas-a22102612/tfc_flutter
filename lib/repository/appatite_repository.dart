@@ -42,7 +42,6 @@ class AppatiteRepository {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
 
     final Map<String, dynamic> requestBody = {
-      'diagnosis': newTest.diagnosis,
       'type': newTest.type,
       'result': newTest.result,
       'resultDate': newTest.resultDate?.toIso8601String(),
@@ -187,22 +186,26 @@ class AppatiteRepository {
 
   Future<Test> getCurrentTest(User sessionOwner, int zeusId) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
-    final Response response = await http.get(
-      Uri.parse("$_endpoint/currentTest/$zeusId"),
-      headers: {'x-api-token': '$_apiKey', 'Authorization': 'Basic $basicAuth'},
+    final response = await http.get(
+      Uri.parse("$_endpoint/lastScreening/$zeusId"),
+      headers: {
+        'x-api-token': '$_apiKey',
+        'Authorization': 'Basic $basicAuth',
+      },
     );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
       return Test.fromJson(data);
     } else if (response.statusCode == 404) {
-      throw Exception("Test not found for patient with zeusId $zeusId");
+      throw Exception("No last screening found for patient with ID: $zeusId");
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
 
   Future<List<String>> getTreatmentHistory(User sessionOwner, Patient patient) async {
     final id = patient.getIdZeus().toString();
@@ -221,6 +224,45 @@ class AppatiteRepository {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
+
+  Future<bool> updatePatientStatus(User sessionOwner, int zeusId, String patientStatus) async {
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final response = await http.post(
+      Uri.parse("$_endpoint/api/patient/updateStatus?patientId=$zeusId&patientStatus=$patientStatus"),
+      headers: {'x-api-token': _apiKey!, 'Authorization': 'Basic $basicAuth'},
+    );
+
+    if (response.statusCode == 200) {
+      return true; // Indicates successful update
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    }
+  }
+
+
+  Future<Test> getLastTest(User sessionOwner, int zeusId) async {
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final response = await http.get(
+      Uri.parse("$_endpoint/tests/lastTest/$zeusId"),
+      headers: {'x-api-token': '$_apiKey', 'Authorization': 'Basic $basicAuth'},
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return Test.fromJson(data);
+    } else if (response.statusCode == 404) {
+      throw Exception("No test found for patient with ID: $zeusId");
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    }
+  }
+
+
 
 
 //todo get rid of this and fetch state from API

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/pages/main.page.dart';
-import 'package:tfc_flutter/patientPages/states/testPages/rastreio/novoRastreio.dart';
+import 'package:tfc_flutter/patientPages/states/testPages/novoTeste.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 import 'package:intl/intl.dart';
 
@@ -35,7 +35,7 @@ class _PaginaNEDState extends State<PaginaNED> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Resultado do Último Rastreio',
+                'Resultado do Último Teste',
                 style: TextStyle(color: Colors.black, fontSize: 20),
               ),
               SizedBox(height: 8),
@@ -92,7 +92,7 @@ class _PaginaNEDState extends State<PaginaNED> {
                       ),
                     );
                   },
-                  child: Text('Adicionar Novo Rastreio'),
+                  child: Text('Adicionar Novo Teste'),
                 ),
               ),
             ],
