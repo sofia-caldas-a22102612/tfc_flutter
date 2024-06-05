@@ -20,8 +20,8 @@ Future<void> main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => Session()),
-      Provider<ZeusRepository>.value(value: FakeZeusRepository()),  // todo replace by ZeusRepository for real interaction with the API
-      //Provider<ZeusRepository>.value(value: ZeusRepository()),
+      // Provider<ZeusRepository>.value(value: FakeZeusRepository()),  // todo replace by ZeusRepository for real interaction with the API
+      Provider<ZeusRepository>.value(value: ZeusRepository()),
       Provider<AppatiteRepository>.value(value: AppatiteRepository()),
     ],
     child: const MyApp(),

@@ -26,6 +26,7 @@ class Patient {
   String? _documentType;
   String? _lastProgramName;
   DateTime? _lastProgramDate;
+  String? _technician;
   int? _userId;
   Test? _lastScreening; // Assuming Test is a valid class representing the last screening
   PatientStatus? _patientStatus;
@@ -216,12 +217,46 @@ class Patient {
     };
   }
 
+  static (String, DateTime)? extractLastProgram(Map<String, dynamic> json) {
+    final data_consumo = json['data_programa_consumo'] != null ? DateTime.parse(json['data_programa_consumo'] as String) : null;
+    final data_metadona = json['entrada_programa_metadona'] != null ? DateTime.parse(json['entrada_programa_metadona'] as String) : null;
+    DateTime? lastProgramDate;
+    String? lastProgramName;
+    if (data_consumo != null && data_metadona != null) {
+      if (data_consumo.isAfter(data_metadona)) {
+        lastProgramDate = data_consumo;
+        lastProgramName = 'consumo';
+      } else {
+        lastProgramDate = data_metadona;
+        lastProgramName = 'metadona';
+      }
+    } else {
+      if (data_consumo != null) {
+        lastProgramDate = data_consumo;
+        lastProgramName = 'consumo';
+      } else if (data_metadona != null) {
+        lastProgramDate = data_metadona;
+        lastProgramName = 'metadona';
+      }
+    }
+
+    if (lastProgramName == null) {
+      return null;
+    } else {
+      return (lastProgramName, lastProgramDate!);
+    }
+  }
+
 
   Patient.fromJsonZeus(Map<String, dynamic> json)
-      : _idZeus = json['idZeus'] as int,
-        _name = json['name'],
-        _birthDate = DateTime.parse(json['birthDate'] as String),
-        _gender = json['gender'] == 'Masculino' ? GenderType.male : GenderType.female;
+      : _idZeus = json['utente_id'] as int,
+        _name = json['utente_nome'],
+        _birthDate = DateTime.parse(json['utente_data_nascimento'] as String),
+        _gender = json['utente_genero'] == 'Masculino' ? GenderType.male : GenderType.female,
+        _cc = json['utente_cc'],
+        _lastProgramName = extractLastProgram(json)?.$1,
+        _lastProgramDate = extractLastProgram(json)?.$2,
+        _technician = json['tecnico_responsavel'];
 
 
   Patient.fromJson(Map<String, dynamic> json)
