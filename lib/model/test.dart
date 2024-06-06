@@ -1,37 +1,36 @@
 import 'package:tfc_flutter/model/patient.dart';
 
 class Test {
-  int? id;
-  int? type;
-  DateTime? testDate;
-  DateTime? resultDate;
-  bool? result;
-  int? testLocation;
-  Patient patient;
+  int? _id;
+  int? _type;
+  DateTime? _testDate;
+  DateTime? _resultDate;
+  bool? _result;
+  int? _testLocation;
+  int _patientId;
 
   Test({
-    this.id,
-    this.type,
-    this.testDate,
-    this.resultDate,
-    this.result,
-    this.testLocation,
-    required this.patient,
-  });
+    int? id,
+    int? type,
+    DateTime? testDate,
+    DateTime? resultDate,
+    bool? result,
+    int? testLocation,
+    required int patientId,
+  })  : _id = id,
+        _type = type,
+        _testDate = testDate,
+        _resultDate = resultDate,
+        _result = result,
+        _testLocation = testLocation,
+        _patientId = patientId;
 
-  Test.rastreio({
-    this.id,
-    this.type,
-    this.testDate,
-    this.resultDate,
-    this.result,
-    this.testLocation,
-    required this.patient,
-  });
+  DateTime? getTestDate() => _testDate;
 
+  bool? getResult() => _result;
 
   String getLocationString() {
-    switch (testLocation) {
+    switch (_testLocation) {
       case 1:
         return 'Instalações Adp';
       case 2:
@@ -44,7 +43,7 @@ class Test {
   }
 
   String getTypeString() {
-    switch (type) {
+    switch (_type) {
       case 1:
         return 'Rastreio';
       case 0:
@@ -54,7 +53,6 @@ class Test {
     }
   }
 
-
   factory Test.fromJson(Map<String, dynamic> json) {
     return Test(
       id: json['id'],
@@ -63,19 +61,25 @@ class Test {
       resultDate: json['resultDate'] != null ? DateTime.parse(json['resultDate']) : null,
       result: json['result'],
       testLocation: json['testLocation'],
-      patient: Patient.fromJson(json['patient']), // No need for null check as patient is required
+      patientId: json['patientId'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['type'] = type;
-    data['testDate'] = testDate?.toIso8601String();
-    data['resultDate'] = resultDate?.toIso8601String();
-    data['result'] = result;
-    data['testLocation'] = testLocation;
-    data['patient'] = patient.toJson();
+    final Map<String, dynamic> data = {
+      'type': _type,
+      'testLocation': _testLocation,
+      'patientId': _patientId,
+    };
+    if (_result != null) {
+      data['result'] = _result!.toString();
+    }
+    if (_testDate != null) {
+      data['testDate'] = _testDate!.toIso8601String();
+    }
+    if (_resultDate != null) {
+      data['resultDate'] = _resultDate!.toIso8601String();
+    }
     return data;
   }
-
 }

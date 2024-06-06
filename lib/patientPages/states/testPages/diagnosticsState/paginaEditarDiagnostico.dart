@@ -145,10 +145,10 @@ class _PaginaEditarDiagnosticoState extends State<PaginaEditarDiagnostico> {
                           resultDate: resultDate,
                           result: result,
                           testLocation: testLocation,
-                          patient: patient!,
+                          patientId: patient!.getIdZeus(),
                         );
 
-                        appatiteRepo.insertNewTest(user!, newDiagnosis, patient!);
+                       //todo fix this appatiteRepo.insertNewTest(user!, newDiagnosis as int, patient: patient!);
 
                         Navigator.push(
                           context,

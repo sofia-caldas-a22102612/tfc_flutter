@@ -114,7 +114,7 @@ class Patient {
 
 
   bool? hasPositiveRastreio(){
-    return _lastScreening!.result;
+    return _lastScreening!.getResult();
   }
 
   // Getter method for name
@@ -198,7 +198,7 @@ class Patient {
     if (_lastScreening == null) {
       return 'Sem Rastreios';
     }
-    if (_lastScreening!.result == true) {
+    if (_lastScreening!.getResult() == true) {
       return 'Rastreio Positivo';
     }
 

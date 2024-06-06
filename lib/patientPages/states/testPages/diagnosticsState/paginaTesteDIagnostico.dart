@@ -98,12 +98,12 @@ class TestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('Test Type: ${test.type ?? ''}'),
+      title: Text('Test Type: ${test.getTypeString()}'),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Test Date: ${test.testDate?.toString() ?? ''}'),
-          Text('Result: ${test.result ?? ''}'),
+          Text('Test Date: ${test.getTestDate().toString()}'),
+          Text('Result: ${test.getResult() ?? ''}'),
         ],
       ),
     );

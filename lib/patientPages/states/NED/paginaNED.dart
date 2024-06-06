@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
-import 'package:tfc_flutter/pages/main.page.dart';
 import 'package:tfc_flutter/patientPages/states/testPages/novoTeste.dart';
-import 'package:tfc_flutter/repository/appatite_repository.dart';
 import 'package:intl/intl.dart';
 
-import '../../patientPages.dart';
-
 class PaginaNED extends StatefulWidget {
-  // Constructor with required patient parameter
   const PaginaNED({super.key});
 
   @override
@@ -18,7 +13,6 @@ class PaginaNED extends StatefulWidget {
 }
 
 class _PaginaNEDState extends State<PaginaNED> {
-
   Widget _buildContent(Enum status, DateTime? statusDate) {
     switch (status) {
       case PatientStatus.NOT_IN_DATABASE:
@@ -69,8 +63,17 @@ class _PaginaNEDState extends State<PaginaNED> {
     final patient = session.patient;
     final user = session.user;
 
+    // Ensure patient is not null before accessing its properties
+    if (patient == null) {
+      return Scaffold(
+        body: Center(
+          child: Text('No patient information available'),
+        ),
+      );
+    }
+
     // Check the patient's status
-    var status = patient!.getPatientState();
+    var status = patient.getPatientState();
 
     return Scaffold(
       body: Center(
@@ -88,7 +91,7 @@ class _PaginaNEDState extends State<PaginaNED> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NovoRastreio(), // change PatientState
+                        builder: (context) => NovoTeste(), // change PatientState
                       ),
                     );
                   },

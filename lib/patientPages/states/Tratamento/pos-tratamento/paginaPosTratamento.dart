@@ -37,7 +37,7 @@ class PaginaPosTratamento extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NovoRastreio(),
+                    builder: (context) => NovoTeste(),
                   ),
                 );
               },

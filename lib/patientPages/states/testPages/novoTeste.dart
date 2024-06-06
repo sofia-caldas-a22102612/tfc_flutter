@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/session.dart';
-import 'package:tfc_flutter/model/test.dart' as TestModel;
 import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
-class NovoRastreio extends StatefulWidget {
-  const NovoRastreio({Key? key}) : super(key: key);
+class NovoTeste extends StatefulWidget {
+  const NovoTeste({Key? key}) : super(key: key);
 
   @override
-  _NovoRastreioState createState() => _NovoRastreioState();
+  _NovoTesteState createState() => _NovoTesteState();
 }
 
-class _NovoRastreioState extends State<NovoRastreio> {
+class _NovoTesteState extends State<NovoTeste> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime? selectedTestDate;
   DateTime? selectedResultDate;
@@ -21,6 +20,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
   int? testType;
   Color positiveButtonColor = Colors.transparent;
   Color negativeButtonColor = Colors.transparent;
+  Future<bool>? _submitFuture;
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +29,18 @@ class _NovoRastreioState extends State<NovoRastreio> {
     final patient = session.patient;
     final user = session.user;
 
+    // Ensure patient and user are not null before accessing their properties
+    if (patient == null || user == null) {
+      return Scaffold(
+        body: Center(
+          child: Text('No patient or user information available'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Novo Teste (${patient!.getName()})'),
+        title: Text('Novo Teste (${patient.getName()})'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -188,12 +197,6 @@ class _NovoRastreioState extends State<NovoRastreio> {
                     ),
                   ],
                   decoration: InputDecoration(labelText: 'Tipo de Teste'),
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Selecione Tipo de Teste';
-                    }
-                    return null;
-                  },
                   onChanged: (int? value) {
                     setState(() {
                       testType = value;
@@ -203,7 +206,7 @@ class _NovoRastreioState extends State<NovoRastreio> {
                 SizedBox(height: 50),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () async {
+                    onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         if (result == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -211,29 +214,50 @@ class _NovoRastreioState extends State<NovoRastreio> {
                           );
                           return;
                         }
-
-                        final newRastreio = TestModel.Test(
-                          type: testType,
-                          testDate: selectedTestDate,
-                          resultDate: selectedResultDate,
-                          result: result,
-                          testLocation: testLocation,
-                          patient: patient,
-                        );
-
-                        await appatiteRepo.insertNewTest(
-                            user!, newRastreio, patient);
-
-                        Navigator.push(
+                        setState(() {
+                          _submitFuture = appatiteRepo.insertNewTest(
+                            user,
+                            result: result,
+                            resultDate: selectedResultDate,
+                            testLocation: testLocation!,
+                            testDate: selectedTestDate,
+                            type: testType ?? 0,
+                            patient: patient,
+                          );
+                        });
+                      }
+                    },
+                    child: Text('Guardar'),
+                  ),
+                ),
+                SizedBox(height: 20),
+                _submitFuture == null
+                    ? Container()
+                    : FutureBuilder<bool>(
+                  future: _submitFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      if (snapshot.error is NotFoundException) {
+                        return Text('Resource not found');
+                      } else {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                    } else if (snapshot.hasData && snapshot.data == true) {
+                      Future.microtask(() {
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => MainPatientPage(),
                           ),
                         );
-                      }
-                    },
-                    child: Text('Guardar'),
-                  ),
+                      });
+                      return Text('Test saved successfully');
+                    } else {
+                      return Text('Failed to save test');
+                    }
+                  },
                 ),
               ],
             ),
