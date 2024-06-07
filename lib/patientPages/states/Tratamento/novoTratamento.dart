@@ -227,3 +227,7 @@ class _NovoTratamentoState extends State<NovoTratamento> {
     );
   }
 }
+
+
+//todo nome de medicmento: Maviret(3 comprimidos por dia), epclusa(1 por dia)
+//todo periodos de tratamento 8, 12, 16

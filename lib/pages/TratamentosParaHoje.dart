@@ -32,31 +32,15 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
           ? Center(
         child: CircularProgressIndicator(),
       )
-          : FutureBuilder<List<Patient>>(
+          : FutureBuilder<List<Patient>?>(
         future: appatiteRepository.fetchPatientsDaily(user),
         builder: (_, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError||!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0),
-              // Larger top padding
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Text(
-                      'Sem Tratamentos Ativos',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-            //print(snapshot.error);
-            //return Center(child: Text('Error loading data: ${snapshot.error}'));
+          } else if (snapshot.hasError) {
+            print(snapshot.error);
+            return Center(child: Text('Error loading data: ${snapshot.error}'));
+
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0),

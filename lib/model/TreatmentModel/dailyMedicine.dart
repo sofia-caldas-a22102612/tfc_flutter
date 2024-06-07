@@ -2,16 +2,16 @@ class DailyMedicine {
   final int id;
   final DateTime date;
   final bool tookMedicine;
-  final bool takeAtHome;
+  final bool? takeAtHome;
   final String? notes;
 
   DailyMedicine({
     required this.id,
-    required this.date,
-    required this.tookMedicine,
-    required this.takeAtHome,
+    DateTime? date,
+    this.tookMedicine = false,
+    this.takeAtHome,
     this.notes,
-  });
+  }) : date = date ?? DateTime.now(); // If date is null, initialize with current DateTime
 
   DailyMedicine.fromJson(Map<String, dynamic> json)
       : id = json['id'] != null ? int.parse(json['id'].toString()) : 0,

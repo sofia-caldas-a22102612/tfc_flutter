@@ -51,7 +51,7 @@ class _NovoTesteState extends State<NovoTeste> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Teste Rastreio',
+                  'Novo Teste',
                   style: TextStyle(fontSize: 30),
                 ),
                 SizedBox(height: 40),
@@ -86,38 +86,7 @@ class _NovoTesteState extends State<NovoTeste> {
                         : '',
                   ),
                 ),
-                SizedBox(height: 40),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Data do Resultado',
-                    prefixIcon: Icon(Icons.calendar_today),
-                  ),
-                  onTap: () async {
-                    final DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2022),
-                      lastDate: DateTime(2025),
-                    );
-                    if (pickedDate != null && pickedDate != selectedResultDate) {
-                      setState(() {
-                        selectedResultDate = pickedDate;
-                      });
-                    }
-                  },
-                  validator: (value) {
-                    if (selectedResultDate == null) {
-                      return 'Selecione data do resultado';
-                    }
-                    return null;
-                  },
-                  readOnly: true,
-                  controller: TextEditingController(
-                    text: selectedResultDate != null
-                        ? "${selectedResultDate!.toLocal()}".split(' ')[0]
-                        : '',
-                  ),
-                ),
+
                 SizedBox(height: 40),
                 Text(
                   'Resultado',
@@ -267,3 +236,11 @@ class _NovoTesteState extends State<NovoTeste> {
     );
   }
 }
+
+
+
+//todo os testes têm validade de 6 meses
+//todo retirar data do resultado do novo teste mas não do editar
+//todo alterar instalações adp para sai e adicionar elemento à dropdown caem
+//todo adicionar ficheiro a testes de diagnostico
+//todo alterar para teste laboratorial e teste rapido (rastreio AcHCV, anticorpo)(Diagnostico : RNAHCV)

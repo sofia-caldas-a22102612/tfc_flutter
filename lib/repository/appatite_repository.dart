@@ -26,7 +26,7 @@ class AppatiteRepository {
   String _buildBasicAuth(String email, String password) =>
       base64.encode(utf8.encode('$email:$password'));
 
-  Future<List<Patient>> fetchPatientsDaily(User sessionOwner) async {
+  Future<List<Patient>?> fetchPatientsDaily(User sessionOwner) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final response = await http.get(
       Uri.parse("$_endpoint/patient/activeTreatment"),
@@ -37,15 +37,28 @@ class AppatiteRepository {
       },
     );
 
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
     if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => Patient.fromJson(json)).toList();
+      if (response.body.isNotEmpty) {
+        try {
+          final List<dynamic> data = jsonDecode(response.body);
+          return data.map((json) => Patient.fromJson(json)).toList();
+        } catch (e) {
+          print('Error decoding JSON: $e');
+          throw FormatException('Invalid JSON response');
+        }
+      } else {
+        return null;
+      }
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
     } else {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
 
   Future<bool> insertNewTest(
     User sessionOwner, {
@@ -109,9 +122,10 @@ class AppatiteRepository {
       return PatientState.fromJson(data);
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
-    } else {
+    }  else if (response.body.isEmpty) {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
+    return null;
   }
 
   Future<List<Treatment>> getTreatmentList(
