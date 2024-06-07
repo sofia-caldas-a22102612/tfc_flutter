@@ -39,6 +39,7 @@ class _PatientStatePageState extends State<PatientStatePage> {
         } else {
           final patientState = snapshot.data!;
           print('Patient State: $patientState'); // Debug print
+
           Widget nextPage;
           switch (patientState.status) {
             case 'NED':
