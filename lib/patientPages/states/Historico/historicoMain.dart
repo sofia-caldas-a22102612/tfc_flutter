@@ -32,25 +32,18 @@ class _HistoricoMainState extends State<HistoricoMain> {
             print(snapshot.error);
             return Center(child: Text('Error loading data'));
           } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return Center(child: Text('Sem Historico'));
+            return Center(child: Text('Sem Histórico'));
           } else {
             var tests = snapshot.data!;
 
-            return Scaffold(
-              body: ListView.builder(
-                itemCount: tests.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: _buildHistoryItem(context, tests[index]), // Pass context here
-                      ),
-                      Divider(), // Add Divider after each list item
-                    ],
-                  );
-                },
-              ),
+            return ListView.builder(
+              itemCount: tests.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: _buildHistoryItem(context, tests[index]),
+                );
+              },
             );
           }
         },
@@ -58,21 +51,32 @@ class _HistoricoMainState extends State<HistoricoMain> {
     );
   }
 
-  Widget _buildHistoryItem(BuildContext context, Test test) { // Accept context as parameter
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-        child: ListTile(
-          title: Text(
-            test.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold),
+  Widget _buildHistoryItem(BuildContext context, Test test) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12.0),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TestInfoPage(test: test)),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Test Type: ${test.getTypeString()}',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text('Test Date: ${test.getTestDate().toString()}'),
+              Text('Result: ${test.getResult() ?? ''}'),
+            ],
           ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TestInfoPage(test: test)), // Navigate to TestInfoPage with test
-            );
-          },
         ),
       ),
     );
