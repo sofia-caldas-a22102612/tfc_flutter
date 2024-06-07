@@ -12,9 +12,7 @@ class TratamentosParaHoje extends StatefulWidget {
   _TratamentosParaHojeState createState() => _TratamentosParaHojeState();
 }
 
-
 class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
-
   int _selectedIndex = 0; // Declare _selectedIndex here
 
   @override
@@ -34,15 +32,15 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
           ? Center(
         child: CircularProgressIndicator(),
       )
-          : FutureBuilder(
+          : FutureBuilder<List<Patient>>(
         future: appatiteRepository.fetchPatientsDaily(user),
         builder: (_, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             print(snapshot.error);
-            return Center(child: Text('Error loading data'));
-          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return Center(child: Text('Error loading data: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0),
               // Larger top padding
@@ -61,7 +59,7 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
               ),
             );
           } else {
-            var patients = snapshot.data as List<Patient>;
+            var patients = snapshot.data!;
 
             return Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 0),
@@ -103,37 +101,31 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
                                       title: Text('Confirmar Toma'),
                                       content: TextButton(
                                         onPressed: () {
-                                          Navigator.pop(
-                                              context); // Close the popup
+                                          Navigator.pop(context); // Close the popup
                                         },
                                         child: Text(
                                           'Confirmar Toma',
                                           style: TextStyle(
-                                            color: Colors
-                                                .white, // White color
+                                            color: Colors.white, // White color
                                           ),
                                         ),
                                         style: TextButton.styleFrom(
-                                          backgroundColor: Colors.green[
-                                          900], // Dark green color
+                                          backgroundColor: Colors.green[900], // Dark green color
                                         ),
                                       ),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
-                                            Navigator.pop(
-                                                context); // Close the popup
+                                            Navigator.pop(context); // Close the popup
                                           },
                                           child: Text(
                                             'Fechar',
                                             style: TextStyle(
-                                              color: Colors
-                                                  .white, // White color
+                                              color: Colors.white, // White color
                                             ),
                                           ),
                                           style: TextButton.styleFrom(
-                                            backgroundColor: Colors.red[
-                                            900], // Dark green color
+                                            backgroundColor: Colors.red[900], // Dark green color
                                           ),
                                         ),
                                       ],
@@ -151,8 +143,7 @@ class _TratamentosParaHojeState extends State<TratamentosParaHoje> {
                           ],
                         ),
                       ),
-                      separatorBuilder: (_, index) =>
-                          Divider(color: Colors.grey, thickness: 1),
+                      separatorBuilder: (_, index) => Divider(color: Colors.grey, thickness: 1),
                       itemCount: patients.length,
                     ),
                   ),

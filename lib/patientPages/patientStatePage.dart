@@ -4,8 +4,6 @@ import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/patientPages/states/NED/paginaNED.dart';
 import 'package:tfc_flutter/patientPages/states/Tratamento/paginaTratamento.dart';
-import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/novoDiagnostico.dart';
-import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaEditarDiagnostico.dart';
 import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaTesteDIagnostico.dart';
 import '../model/session.dart';
 import '../repository/appatite_repository.dart';
@@ -41,7 +39,6 @@ class _PatientStatePageState extends State<PatientStatePage> {
         } else {
           final patientState = snapshot.data!;
           print('Patient State: $patientState'); // Debug print
-
           Widget nextPage;
           switch (patientState.status) {
             case 'NED':
@@ -54,7 +51,7 @@ class _PatientStatePageState extends State<PatientStatePage> {
               break;
             case 'POSITIVE_SCREENING':
               patient.updatePatientState(PatientStatus.POSITIVE_SCREENING, patientState.statusDate);
-              nextPage = NovoDiagnostico();
+              nextPage = PaginaTesteDiagnostico();
               break;
             case 'POSITIVE_DIAGNOSIS':
               patient.updatePatientState(PatientStatus.POSITIVE_DIAGNOSIS, patientState.statusDate);

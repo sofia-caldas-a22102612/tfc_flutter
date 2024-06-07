@@ -82,4 +82,12 @@ class Test {
     }
     return data;
   }
+
+  DateTime? getResultDate() => _resultDate;
+
+  int? getTestLocation() => _testLocation;
+
+  int? getType() => _type;
+
+  int? getId() => _id;
 }

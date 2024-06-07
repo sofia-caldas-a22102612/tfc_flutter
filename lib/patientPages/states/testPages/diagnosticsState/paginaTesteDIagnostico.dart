@@ -4,7 +4,7 @@ import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart';
-import 'package:tfc_flutter/patientPages/mainPatientPage.dart';
+import 'package:tfc_flutter/patientPages/states/Tratamento/novoTratamento.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
 class PaginaTesteDiagnostico extends StatefulWidget {
@@ -23,68 +23,51 @@ class _PaginaTesteDiagnosticoState extends State<PaginaTesteDiagnostico> {
     final user = session.user;
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: FutureBuilder<PatientState?>(
-                future: appatiteRepository.getPatientState(session.user!, patient!),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    final patientState = snapshot.data!;
-                    if (patientState.status == PatientStatus.POSITIVE_DIAGNOSIS.name) {
-                      return FutureBuilder<Test>(
-                        future: appatiteRepository.getCurrentTest(session.user!, patient.getIdZeus()),
-                        builder: (context, testSnapshot) {
-                          if (testSnapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (testSnapshot.hasError || testSnapshot.data == null) {
-                            return Text('Error fetching test data');
-                          } else {
-                            final test = testSnapshot.data!;
-                            return ListView.builder(
-                              itemCount: 1,
-                              itemBuilder: (context, index) {
-                                return TestWidget(test: test);
-                              },
-                            );
-                          }
-                        },
-                      );
-                    } else if (patientState.status == PatientStatus.POSITIVE_SCREENING.name) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          // Handle the action for starting a new screening
-                        },
-                        child: Text('Novo Diagnóstico'),
-                      );
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  }
-                },
+      body: FutureBuilder<Test?>(
+        future: appatiteRepository.getCurrentTest(user!, patient!.getIdZeus()),
+        builder: (context, testSnapshot) {
+          if (testSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(),
               ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                appatiteRepository.updatePatientStatus(user!, patient.getIdZeus(), PatientStatus.TREATMENT.name);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MainPatientPage(),
+            );
+          } else if (testSnapshot.hasError) {
+            return Center(child: Text('Error fetching test data: ${testSnapshot.error}'));
+          } else if (!testSnapshot.hasData || testSnapshot.data == null) {
+            return Center(child: Text('No test data found'));
+          } else {
+            final test = testSnapshot.data!;
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: 1,
+                    itemBuilder: (context, index) {
+                      return TestWidget(test: test);
+                    },
                   ),
-                );
-              },
-              child: Text('Começar Tratamento'),
-            ),
-          ],
-        ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NovoTratamento(),
+                        ),
+                      );
+                    },
+                    child: Text('Começar Tratamento'),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }
