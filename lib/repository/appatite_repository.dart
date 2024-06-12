@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/model/user.dart';
 import '../model/TreatmentModel/treatment.dart';
@@ -44,6 +43,7 @@ class AppatiteRepository {
       if (response.body.isNotEmpty) {
         try {
           final List<dynamic> data = jsonDecode(response.body);
+          print('Decoded JSON data: $data'); // Log decoded data
           return data.map((json) => Patient.fromJson(json)).toList();
         } catch (e) {
           print('Error decoding JSON: $e');
@@ -110,7 +110,7 @@ class AppatiteRepository {
   Future<PatientState?> getPatientState(
       User sessionOwner, Patient patient) async {
     final basicAuth =
-        _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final idZeus = patient.getIdZeus().toString();
     final response = await http.get(
       Uri.parse("$_endpoint/patient/currentStatus?zeusId=$idZeus"),
@@ -118,14 +118,21 @@ class AppatiteRepository {
     );
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return PatientState.fromJson(data);
+      // Log the response body to understand its structure
+      print("Response body: ${response.body}");
+
+      try {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return PatientState.fromJson(data);
+      } catch (e) {
+        print("Error parsing JSON: $e");
+        throw Exception("Failed to parse JSON: $e");
+      }
     } else if (response.statusCode == 401) {
       throw AuthenticationException();
-    }  else if (response.body.isEmpty) {
-      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}: ${response.body}");
     }
-    return null;
   }
 
   Future<List<Treatment>> getTreatmentList(

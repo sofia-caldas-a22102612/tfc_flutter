@@ -81,7 +81,6 @@ class _PaginaNEDState extends State<PaginaNED> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildContent(status as Enum, patient.patientStatusDate),
               SizedBox(height: 32), // Add spacing before the button
               Padding(
                 padding: const EdgeInsets.all(16.0),

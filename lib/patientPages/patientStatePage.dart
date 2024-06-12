@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/patientPages/states/NED/paginaNED.dart';
 import 'package:tfc_flutter/patientPages/states/Tratamento/paginaTratamento.dart';
 import 'package:tfc_flutter/patientPages/states/testPages/diagnosticsState/paginaTesteDIagnostico.dart';

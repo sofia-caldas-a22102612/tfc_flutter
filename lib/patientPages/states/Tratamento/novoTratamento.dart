@@ -85,51 +85,15 @@ class _NovoTratamentoState extends State<NovoTratamento> {
                   ),
                 ),
                 SizedBox(height: 40),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Data de Fim Esperada do Tratamento',
-                    prefixIcon: Icon(Icons.calendar_today),
-                  ),
-                  onTap: () async {
-                    final DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2022),
-                      lastDate: DateTime(2025),
-                    );
-                    if (pickedDate != null && pickedDate != selectedExpectedEndDate) {
-                      setState(() {
-                        selectedExpectedEndDate = pickedDate;
-                      });
-                    }
-                  },
-                  validator: (value) {
-                    if (selectedExpectedEndDate == null) {
-                      return 'Selecione data de fim esperada do tratamento';
-                    }
-                    return null;
-                  },
-                  readOnly: true,
-                  controller: TextEditingController(
-                    text: selectedExpectedEndDate != null
-                        ? "${selectedExpectedEndDate!.toLocal()}".split(' ')[0]
-                        : '',
-                  ),
-                ),
-                SizedBox(height: 40),
                 DropdownButtonFormField<int>(
                   items: [
                     DropdownMenuItem(
                       value: 1,
-                      child: Text('Medicamento 1'),
+                      child: Text('Maviret'),
                     ),
                     DropdownMenuItem(
                       value: 2,
-                      child: Text('Medicamento 2'),
-                    ),
-                    DropdownMenuItem(
-                      value: 3,
-                      child: Text('Medicamento 3'),
+                      child: Text('Epclusa'),
                     ),
                   ],
                   decoration: InputDecoration(labelText: 'Nome do Medicamento'),
@@ -155,6 +119,10 @@ class _NovoTratamentoState extends State<NovoTratamento> {
                     DropdownMenuItem(
                       value: 12,
                       child: Text('12 Semanas'),
+                    ),
+                    DropdownMenuItem(
+                      value: 16,
+                      child: Text('16 Semanas'),
                     ),
                   ],
                   decoration: InputDecoration(labelText: 'Duração do Tratamento'),

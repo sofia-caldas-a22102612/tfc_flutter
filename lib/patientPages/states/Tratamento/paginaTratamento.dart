@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/TreatmentModel/treatment.dart';
-import 'package:tfc_flutter/model/patient.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/repository/appatite_repository.dart';
 
@@ -56,8 +55,6 @@ class _PaginaTratamentoState extends State<PaginaTratamento> {
                   ),
                   SizedBox(height: 40),
                   Text('Data de Início: ${currentTreatment.startDate}'),
-                  SizedBox(height: 20),
-                  Text('Data Esperada de Fim: ${currentTreatment.expectedEndDate}'),
                   SizedBox(height: 20),
                   Text('Medicamento: ${currentTreatment.nameMedication}'),
                   SizedBox(height: 20),

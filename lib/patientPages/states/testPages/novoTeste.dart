@@ -129,7 +129,7 @@ class _NovoTesteState extends State<NovoTeste> {
                   items: [
                     DropdownMenuItem(
                       value: 1,
-                      child: Text('Instalações Adp'),
+                      child: Text('SAI'),
                     ),
                     DropdownMenuItem(
                       value: 2,
@@ -138,6 +138,10 @@ class _NovoTesteState extends State<NovoTeste> {
                     DropdownMenuItem(
                       value: 3,
                       child: Text('Unidade Móvel'),
+                    ),
+                    DropdownMenuItem(
+                      value: 4,
+                      child: Text('CAEM'),
                     ),
                   ],
                   decoration: InputDecoration(labelText: 'Local do Teste'),
@@ -240,7 +244,6 @@ class _NovoTesteState extends State<NovoTeste> {
 
 
 //todo os testes têm validade de 6 meses
-//todo retirar data do resultado do novo teste mas não do editar
 //todo alterar instalações adp para sai e adicionar elemento à dropdown caem
 //todo adicionar ficheiro a testes de diagnostico
 //todo alterar para teste laboratorial e teste rapido (rastreio AcHCV, anticorpo)(Diagnostico : RNAHCV)

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/model/patient_state.dart';
 import 'package:tfc_flutter/model/session.dart';
 import 'package:tfc_flutter/model/test.dart';
 import 'package:tfc_flutter/model/user.dart';

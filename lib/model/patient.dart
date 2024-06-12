@@ -3,8 +3,26 @@ import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/model/test.dart'; // Import the Test class
 import 'package:tfc_flutter/model/TreatmentModel/treatment.dart'; // Import the Treatment class
 
+class PatientState {
+  String status;
+  DateTime? statusDate;
+
+  PatientState(this.status, this.statusDate);
+
+  PatientState.fromJson(Map<String, dynamic> json)
+      : status = (json['status'] as String).toUpperCase(),
+        statusDate = json['statusDate'] != null ? DateTime.parse(json['statusDate'] as String) : null;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'statusDate': statusDate?.toIso8601String(),
+    };
+  }
+}
+
 enum PatientStatus {
-  NED,  // no evidence of disease
+  NED, // no evidence of disease
   POSITIVE_SCREENING,
   POSITIVE_DIAGNOSIS,
   TREATMENT,
@@ -23,60 +41,58 @@ class Patient {
   String? _documentType;
   String? _lastProgramName;
   DateTime? _lastProgramDate;
-  String? _technician;
   int? _userId;
-  Test? _lastScreening; // Assuming Test is a valid class representing the last screening
+  Test?
+      _lastScreening; // Assuming Test is a valid class representing the last screening
   PatientStatus? _patientStatus;
   DateTime? _patientStatusDate;
- /* List<Treatment>? _treatmentList; // Use the prefix for the Treatment class
-  Treatment? _currentTreatment;*/
-  HashSet<Test>? _testList; // Use the prefix for the Test class
+
 
   // Constructor 1: for Patient.withDetails
   Patient.withDetails(
-      this._idZeus,
-      this._name,
-      this._cc,
-      this._birthDate,
-      this._gender,
-      this._realId,
-      this._documentType,
-      this._lastProgramName,
-      this._lastProgramDate,
-      this._userId,
-      this._lastScreening,
-      this._patientStatus,
-      );
+    this._idZeus,
+    this._name,
+    this._cc,
+    this._birthDate,
+    this._gender,
+    this._realId,
+    this._documentType,
+    this._lastProgramName,
+    this._lastProgramDate,
+    this._userId,
+    this._lastScreening,
+    this._patientStatus,
+  );
 
   // Constructor 2: for the provided values
   Patient(
-      this._idZeus,
-      this._name,
-      this._cc,
-      this._birthDate,
-      this._gender,
-      this._realId,
-      this._documentType,
-      this._lastProgramName,
-      this._lastProgramDate,
-      this._userId,
-      Test? lastScreening,
-      PatientStatus? patientStatus,
-      )   : _lastScreening = lastScreening,
+    this._idZeus,
+    this._name,
+    this._cc,
+    this._birthDate,
+    this._gender,
+    this._realId,
+    this._documentType,
+    this._lastProgramName,
+    this._lastProgramDate,
+    this._userId,
+    Test? lastScreening,
+    PatientStatus? patientStatus,
+  )   : _lastScreening = lastScreening,
         _patientStatus = patientStatus;
 
   // Constructor for Zeus
   Patient.fromZeus(
-      this._idZeus,
-      this._name,
-      this._cc,
-      this._birthDate,
-      this._gender,
-      this._realId,
-      this._documentType,
-      this._lastProgramName,
-      this._lastProgramDate,
-      );
+    this._idZeus,
+    this._name,
+    this._cc,
+    this._birthDate,
+    this._gender,
+    this._realId,
+    this._documentType,
+    this._lastProgramName,
+    this._lastProgramDate,
+  );
 
   void updatePatientState(PatientStatus status, DateTime? statusDate) {
     _patientStatus = status;
@@ -87,28 +103,6 @@ class Patient {
     _lastScreening = rastreio;
   }
 
-  void addTest(Test newTest) {
-    _testList ??= HashSet<Test>();
-
-    // Check if newTest already exists in the _testList
-    bool alreadyExists = _testList!.contains(newTest);
-
-    if (alreadyExists) {
-      // If newTest already exists, update it
-      _testList!.remove(newTest); // Remove the existing test
-      _testList!.add(newTest); // Add the new test
-    } else {
-      // If newTest doesn't exist, add it to the _testList
-      _testList!.add(newTest);
-    }
-  }
-
-  /*
-  void addTreatment(Treatment newTreatment) {
-    _currentTreatment = newTreatment;
-    _treatmentList ??= [];
-    _treatmentList!.add(newTreatment);
-  }*/
 
   bool? hasPositiveRastreio() {
     return _lastScreening?.getResult();
@@ -130,7 +124,10 @@ class Patient {
   }
 
   String getPatientStateString() {
-    return getPatientState()!.toString().split('.').last; // Return the enum value without the enum type prefix
+    return getPatientState()!
+        .toString()
+        .split('.')
+        .last; // Return the enum value without the enum type prefix
   }
 
   DateTime? get patientStatusDate => _patientStatusDate;
@@ -175,17 +172,6 @@ class Patient {
     return _lastScreening;
   }
 
-  /*
-  List<Treatment>? getTreatmentList() {
-    return _treatmentList;
-  }
-
-  Treatment getCurrentTreatment() {
-    return _treatmentList?.last ?? (throw StateError('No treatment available'));
-  }
-  */
-
-
   PatientStatus? getPatientState() {
     if (_patientStatus == null) {
       _patientStatus = PatientStatus.NED;
@@ -213,37 +199,32 @@ class Patient {
     };
   }
 
-
   Patient.fromJsonZeus(Map<String, dynamic> json)
       : _idZeus = json['utente_id'] as int,
         _name = json['utente_nome'] as String,
         _birthDate = DateTime.parse(json['utente_data_nascimento'] as String),
-        _gender = json['utente_genero'] == 'Masculino' ? GenderType.male : GenderType.female;
+        _gender = json['utente_genero'] == 'Masculino'
+            ? GenderType.male
+            : GenderType.female;
 
   Patient.fromJson(Map<String, dynamic> json)
       : _idZeus = json['idZeus'] as int,
         _name = json['name'] as String,
         _cc = json['cc'] as String?,
         _birthDate = DateTime.parse(json['birthDate'] as String),
-        _gender = GenderType.values[json['gender'] as int],
-        _realId = json['realId'] as String?, // Ensure this matches your data type
+        _gender = json['gender'] is int
+            ? GenderType.values[json['gender'] as int]
+            : GenderType.values[int.parse(json['gender'] as String)],
+        _realId = json['realId'] as String?,
         _documentType = json['documentType'] as String?,
         _lastProgramName = json['lastProgramName'] as String?,
         _lastProgramDate = json['lastProgramDate'] != null
             ? DateTime.parse(json['lastProgramDate'] as String)
             : null,
         _userId = json['userId'] as int?,
-  /*
-        _currentTreatment = json['currentTreatment'] != null ? Treatment.fromJson(json['currentTreatment']) : null,
-        _patientStatus = json['patientStatus'] != null ? PatientStatus.values[json['patientStatus'] as int] : null,
-        _treatmentList = (json['treatmentList'] as List<dynamic>?)
-            ?.map((treatmentJson) => Treatment.fromJson(treatmentJson))
-            .toList(),*/
-        _testList = json['testList'] != null
-            ? HashSet<Test>.from(
-            (json['testList'] as List<dynamic>)
-                .map((testJson) => Test.fromJson(testJson as Map<String, dynamic>)))
-            : null;
+        _lastScreening = json['lastScreening'] != null ? Test.fromJson(json['lastScreening']) : null,
+        _patientStatus = json['state'] != null ? PatientStatus.values.firstWhere((e) => e.toString().split('.').last == json['state']) : null,
+        _patientStatusDate = json['statusDate'] != null ? DateTime.parse(json['statusDate'] as String) : null;
 
   Map<String, dynamic> toJson() {
     return {
@@ -258,29 +239,8 @@ class Patient {
       'lastProgramDate': _lastProgramDate?.toIso8601String(),
       'userId': _userId,
       'lastScreening': _lastScreening?.toJson(),
-      'patientStatus': _patientStatus?.index, // Include patient status here
-      //'treatmentList': _treatmentList?.map((treatment) => treatment.toJson()).toList(),
-      'testList': _testList?.map((test) => test.toJson()).toList(),
-      //'currentTreatment': _currentTreatment?.toJson(),
+      'state': _patientStatus?.toString().split('.').last,
+      'statusDate': _patientStatusDate?.toIso8601String(),
     };
-  }
-
-  PatientStatus stringToPatientStatus(String str) {
-    switch (str) {
-      case "NED":
-        return PatientStatus.NED;
-      case "POSITIVE_SCREENING_DIAGNOSIS":
-        return PatientStatus.POSITIVE_SCREENING;
-      case "POSITIVE_DIAGNOSIS":
-        return PatientStatus.POSITIVE_DIAGNOSIS;
-      case "TREATMENT":
-        return PatientStatus.TREATMENT;
-      case "POST_TREATMENT_ANALYSIS":
-        return PatientStatus.POST_TREATMENT_ANALYSIS;
-      case "FINISHED":
-        return PatientStatus.FINISHED;
-      default:
-        return PatientStatus.NOT_IN_DATABASE;
-    }
   }
 }

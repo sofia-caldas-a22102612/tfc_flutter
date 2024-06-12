@@ -27,7 +27,6 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
         children: [
           _buildDetailItem('Nome', patient!.getName()), // Accessing patient using widget.patient
           _buildDetailItem('ID interno', patient.getIdZeus().toString()),
-          _buildDetailItem('CC', patient.getCC() ?? ''),
           _buildDetailItem('Género', patient.getGender() == GenderType.male ? 'Masculino' : 'Feminino'),
           _buildDetailItem('Data de nascimento', DateFormat('yyyy-MM-dd').format(patient.getBirthdate())),
           _buildDetailItem('ID', patient.getRealId()?.toString() ?? 'N/A'),
