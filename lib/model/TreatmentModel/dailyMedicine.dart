@@ -11,20 +11,25 @@ class DailyMedicine {
     this.tookMedicine = false,
     this.takeAtHome,
     this.notes,
-  }) : date = date ?? DateTime.now(); // If date is null, initialize with current DateTime
+  }) : date = date ?? DateTime.now();
 
-  DailyMedicine.fromJson(Map<String, dynamic> json)
-      : id = json['id'] != null ? int.parse(json['id'].toString()) : 0,
-        date = DateTime.parse(json['date']),
-        tookMedicine = json['tookMedicine'] == true,
-        takeAtHome = json['takeAtHome'] == true,
-        notes = json['notes'];
+  factory DailyMedicine.fromJson(Map<String, dynamic> json) {
+    return DailyMedicine(
+      id: json['id'] != null ? int.parse(json['id'].toString()) : 0,
+      date: DateTime.parse(json['date'] as String),
+      tookMedicine: json['tookMedicine'] as bool,
+      takeAtHome: json['takeAtHome'] as bool?,
+      notes: json['notes'] as String?,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'date': date.toIso8601String(),
-    'tookMedicine': tookMedicine,
-    'takeAtHome': takeAtHome,
-    'notes': notes,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date': date.toIso8601String(),
+      'tookMedicine': tookMedicine,
+      'takeAtHome': takeAtHome,
+      'notes': notes,
+    };
+  }
 }

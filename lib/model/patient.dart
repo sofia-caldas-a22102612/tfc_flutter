@@ -212,19 +212,15 @@ class Patient {
         _name = json['name'] as String,
         _cc = json['cc'] as String?,
         _birthDate = DateTime.parse(json['birthDate'] as String),
-        _gender = json['gender'] is int
-            ? GenderType.values[json['gender'] as int]
-            : GenderType.values[int.parse(json['gender'] as String)],
+        _gender = GenderType.values[json['gender'] as int],
         _realId = json['realId'] as String?,
+        // Ensure this matches your data type
         _documentType = json['documentType'] as String?,
         _lastProgramName = json['lastProgramName'] as String?,
         _lastProgramDate = json['lastProgramDate'] != null
             ? DateTime.parse(json['lastProgramDate'] as String)
             : null,
-        _userId = json['userId'] as int?,
-        _lastScreening = json['lastScreening'] != null ? Test.fromJson(json['lastScreening']) : null,
-        _patientStatus = json['state'] != null ? PatientStatus.values.firstWhere((e) => e.toString().split('.').last == json['state']) : null,
-        _patientStatusDate = json['statusDate'] != null ? DateTime.parse(json['statusDate'] as String) : null;
+        _userId = json['userId'] as int?;
 
   Map<String, dynamic> toJson() {
     return {
@@ -239,8 +235,7 @@ class Patient {
       'lastProgramDate': _lastProgramDate?.toIso8601String(),
       'userId': _userId,
       'lastScreening': _lastScreening?.toJson(),
-      'state': _patientStatus?.toString().split('.').last,
-      'statusDate': _patientStatusDate?.toIso8601String(),
+      'patientStatus': _patientStatus?.index,
     };
   }
 }

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tfc_flutter/model/gender_type.dart';
 import 'package:tfc_flutter/model/patient.dart';
-import 'package:tfc_flutter/model/user.dart';
 import 'package:tfc_flutter/repository/zeus_repository.dart';
 import '../model/session.dart';
 import '../patientPages/mainPatientPage.dart';
