@@ -1,87 +1,74 @@
-import 'package:tfc_flutter/model/TreatmentModel/dailyMedicine.dart';
-
 class Treatment {
-  final int _id;
-  final DateTime? _startDate;
-  final DateTime? _realEndDate;
-  final DateTime? _postTreatmentStartDate;
-  final String? _nameMedication;
-  final String? _reasonsDropout;
-  final String? _endTreatmentComment;
-  final int? _treatmentDuration;
-  final int _patientId;
-  final List<DailyMedicine>? _dailyMedicine;
+  final int id;
+  final String? startDate;
+  final String? realEndDate;
+  final String? postTreatmentStartDate;
+  final int? nameMedication;
+  final int? reasonsDropout;
+  final String? endTreatmentComment;
+  final int? treatmentDuration;
+  final int? patientId;
+  final List<DailyMedicine> dailyMedicines;
 
   Treatment({
-    required int id,
-    DateTime? startDate,
-    DateTime? realEndDate,
-    DateTime? postTreatmentStartDate,
-    String? nameMedication,
-    String? reasonsDropout,
-    String? endTreatmentComment,
-    int? treatmentDuration,
-    required int patientId,
-    List<DailyMedicine>? dailyMedicine,
-  })  : _id = id,
-        _startDate = startDate,
-        _realEndDate = realEndDate,
-        _postTreatmentStartDate = postTreatmentStartDate,
-        _nameMedication = nameMedication,
-        _reasonsDropout = reasonsDropout,
-        _endTreatmentComment = endTreatmentComment,
-        _treatmentDuration = treatmentDuration,
-        _patientId = patientId,
-        _dailyMedicine = dailyMedicine;
-
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': _id,
-      'startDate': _startDate?.toIso8601String(),
-      'realEndDate': _realEndDate?.toIso8601String(),
-      'postTreatmentStartDate': _postTreatmentStartDate?.toIso8601String(),
-      'nameMedication': _nameMedication,
-      'reasonsDropout': _reasonsDropout,
-      'endTreatmentComment': _endTreatmentComment,
-      'treatmentDuration': _treatmentDuration,
-      'patientId': _patientId,
-      'dailyMedicine': _dailyMedicine?.map((medicine) => medicine.toJson()).toList(),
-    };
-  }
-
+    required this.id,
+    this.startDate,
+    this.realEndDate,
+    this.postTreatmentStartDate,
+    this.nameMedication,
+    this.reasonsDropout,
+    this.endTreatmentComment,
+    this.treatmentDuration,
+    this.patientId,
+    this.dailyMedicines = const [],
+  });
 
   factory Treatment.fromJson(Map<String, dynamic> json) {
-    try {
-      return Treatment(
-        id: json['id'] as int,
-        startDate: json['startDate'] != null ? DateTime.parse(json['startDate'] as String) : null,
-        realEndDate: json['realEndDate'] != null ? DateTime.parse(json['realEndDate'] as String) : null,
-        postTreatmentStartDate: json['postTreatmentStartDate'] != null ? DateTime.parse(json['postTreatmentStartDate'] as String) : null,
-        nameMedication: json['nameMedication'] as String?,
-        reasonsDropout: json['reasonsDropout'] as String?,
-        endTreatmentComment: json['endTreatmentComment'] as String?,
-        treatmentDuration: json['treatmentDuration'] as int?,
-        patientId: json['patientId'] as int,
-        dailyMedicine: (json['dailyMedicine'] as List<dynamic>?)
-            ?.map((medicine) => DailyMedicine.fromJson(medicine as Map<String, dynamic>))
-            .toList(),
-      );
-    } catch (e) {
-      print('Error in Treatment.fromJson: $e');
-      rethrow;
-    }
+    return Treatment(
+      id: json['id'],
+      startDate: json['start_date'] as String?,
+      realEndDate: json['real_end_date'] as String?,
+      postTreatmentStartDate: json['post_treatment_start_date'] as String?,
+      nameMedication: json['name_medication'] as int?,
+      reasonsDropout: json['reasons_dropout'] as int?,
+      endTreatmentComment: json['end_treatment_comments'] as String?,
+      treatmentDuration: json['treatment_duration'] as int?,
+      patientId: json['patient_id'] as int?,
+      dailyMedicines: (json['dailyMedicines'] as List<dynamic>?)
+          ?.map((e) => DailyMedicine.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+          [],
+    );
   }
+}
 
+class DailyMedicine {
+  final int id;
+  final String date;
+  final bool tookMedicine;
+  final bool takeAtHome;
+  final String? notes;
+  final Treatment? treatment;
 
-  int get id => _id;
-  DateTime? get startDate => _startDate;
-  DateTime? get realEndDate => _realEndDate;
-  DateTime? get postTreatmentStartDate => _postTreatmentStartDate;
-  String? get nameMedication => _nameMedication;
-  String? get reasonsDropout => _reasonsDropout;
-  String? get endTreatmentComment => _endTreatmentComment;
-  int? get treatmentDuration => _treatmentDuration;
-  int get patientId => _patientId;
-  List<DailyMedicine>? get dailyMedicine => _dailyMedicine;
+  DailyMedicine({
+    required this.id,
+    required this.date,
+    required this.tookMedicine,
+    this.takeAtHome = false,
+    this.notes,
+    this.treatment,
+  });
+
+  factory DailyMedicine.fromJson(Map<String, dynamic> json) {
+    return DailyMedicine(
+      id: json['id'],
+      date: json['date'] as String,
+      tookMedicine: json['took_medicine'] as bool,
+      takeAtHome: json['to_take_at_home'] as bool? ?? false,
+      notes: json['notes'] as String?,
+      treatment: json['treatment'] != null
+          ? Treatment.fromJson(json['treatment'] as Map<String, dynamic>)
+          : null,
+    );
+  }
 }

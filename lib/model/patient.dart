@@ -42,57 +42,55 @@ class Patient {
   String? _lastProgramName;
   DateTime? _lastProgramDate;
   int? _userId;
-  Test?
-      _lastScreening; // Assuming Test is a valid class representing the last screening
+  Test? _lastScreening; // Assuming Test is a valid class representing the last screening
   PatientStatus? _patientStatus;
   DateTime? _patientStatusDate;
 
-
   // Constructor 1: for Patient.withDetails
   Patient.withDetails(
-    this._idZeus,
-    this._name,
-    this._cc,
-    this._birthDate,
-    this._gender,
-    this._realId,
-    this._documentType,
-    this._lastProgramName,
-    this._lastProgramDate,
-    this._userId,
-    this._lastScreening,
-    this._patientStatus,
-  );
+      this._idZeus,
+      this._name,
+      this._cc,
+      this._birthDate,
+      this._gender,
+      this._realId,
+      this._documentType,
+      this._lastProgramName,
+      this._lastProgramDate,
+      this._userId,
+      this._lastScreening,
+      this._patientStatus,
+      );
 
   // Constructor 2: for the provided values
   Patient(
-    this._idZeus,
-    this._name,
-    this._cc,
-    this._birthDate,
-    this._gender,
-    this._realId,
-    this._documentType,
-    this._lastProgramName,
-    this._lastProgramDate,
-    this._userId,
-    Test? lastScreening,
-    PatientStatus? patientStatus,
-  )   : _lastScreening = lastScreening,
+      this._idZeus,
+      this._name,
+      this._cc,
+      this._birthDate,
+      this._gender,
+      this._realId,
+      this._documentType,
+      this._lastProgramName,
+      this._lastProgramDate,
+      this._userId,
+      Test? lastScreening,
+      PatientStatus? patientStatus,
+      )   : _lastScreening = lastScreening,
         _patientStatus = patientStatus;
 
   // Constructor for Zeus
   Patient.fromZeus(
-    this._idZeus,
-    this._name,
-    this._cc,
-    this._birthDate,
-    this._gender,
-    this._realId,
-    this._documentType,
-    this._lastProgramName,
-    this._lastProgramDate,
-  );
+      this._idZeus,
+      this._name,
+      this._cc,
+      this._birthDate,
+      GenderType gender,
+      this._realId,
+      this._documentType,
+      this._lastProgramName,
+      this._lastProgramDate,
+      ) : _gender = gender;
 
   void updatePatientState(PatientStatus status, DateTime? statusDate) {
     _patientStatus = status;
@@ -102,7 +100,6 @@ class Patient {
   void addRastreio(Test rastreio) {
     _lastScreening = rastreio;
   }
-
 
   bool? hasPositiveRastreio() {
     return _lastScreening?.getResult();
@@ -195,32 +192,40 @@ class Patient {
       'idZeus': _idZeus,
       'name': _name,
       'birthDate': _birthDate.toIso8601String(),
-      'gender': _gender == GenderType.male ? 'Masculino' : 'Feminino',
+      'gender': _gender.toString().split('.').last, // Convert enum to string
     };
   }
 
-  Patient.fromJsonZeus(Map<String, dynamic> json)
-      : _idZeus = json['utente_id'] as int,
-        _name = json['utente_nome'] as String,
-        _birthDate = DateTime.parse(json['utente_data_nascimento'] as String),
-        _gender = json['utente_genero'] == 'Masculino'
-            ? GenderType.male
-            : GenderType.female;
+  factory Patient.fromJsonZeus(Map<String, dynamic> json) {
+    return Patient.fromZeus(
+      json['utente_id'] as int,
+      json['utente_nome'] as String,
+      json['utente_cc'] as String?,
+      DateTime.parse(json['utente_data_nascimento'] as String),
+      GenderType.values.firstWhere((e) => e.toString().split('.').last == json['utente_genero']),
+      json['real_id'] as String?,
+      json['document_type'] as String?,
+      json['last_program_name'] as String?,
+      json['last_program_date'] != null ? DateTime.parse(json['last_program_date'] as String) : null,
+    );
+  }
 
-  Patient.fromJson(Map<String, dynamic> json)
-      : _idZeus = json['idZeus'] as int,
-        _name = json['name'] as String,
-        _cc = json['cc'] as String?,
-        _birthDate = DateTime.parse(json['birthDate'] as String),
-        _gender = GenderType.values[json['gender'] as int],
-        _realId = json['realId'] as String?,
-        // Ensure this matches your data type
-        _documentType = json['documentType'] as String?,
-        _lastProgramName = json['lastProgramName'] as String?,
-        _lastProgramDate = json['lastProgramDate'] != null
-            ? DateTime.parse(json['lastProgramDate'] as String)
-            : null,
-        _userId = json['userId'] as int?;
+  factory Patient.fromJson(Map<String, dynamic> json) {
+    return Patient(
+      json['idZeus'] as int,
+      json['name'] as String,
+      json['cc'] as String?,
+      DateTime.parse(json['birthDate'] as String),
+      GenderType.values.firstWhere((e) => e.toString().split('.').last == json['gender']), // Ensure enum is correctly parsed
+      json['realId'] as String?,
+      json['documentType'] as String?,
+      json['lastProgramName'] as String?,
+      json['lastProgramDate'] != null ? DateTime.parse(json['lastProgramDate'] as String) : null,
+      json['userId'] as int?,
+      json['lastScreening'] != null ? Test.fromJson(json['lastScreening'] as Map<String, dynamic>) : null,
+      json['patientStatus'] != null ? PatientStatus.values[json['patientStatus'] as int] : null,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -228,7 +233,7 @@ class Patient {
       'name': _name,
       'cc': _cc,
       'birthDate': _birthDate.toIso8601String(),
-      'gender': _gender.index,
+      'gender': _gender.toString().split('.').last, // Convert enum to string
       'realId': _realId,
       'documentType': _documentType,
       'lastProgramName': _lastProgramName,
@@ -236,6 +241,7 @@ class Patient {
       'userId': _userId,
       'lastScreening': _lastScreening?.toJson(),
       'patientStatus': _patientStatus?.index,
+      'patientStatusDate': _patientStatusDate?.toIso8601String(),
     };
   }
 }
