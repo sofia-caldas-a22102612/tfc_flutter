@@ -32,15 +32,11 @@ class _PaginaTratamentoState extends State<PaginaTratamento> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(),
-              ),
+              child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.data == null) {
+          } else if (!snapshot.hasData || snapshot.data == null) {
             return Center(child: Text('No current treatment found'));
           } else {
             final currentTreatment = snapshot.data!;
@@ -54,11 +50,12 @@ class _PaginaTratamentoState extends State<PaginaTratamento> {
                     style: TextStyle(fontSize: 30),
                   ),
                   SizedBox(height: 40),
+                  print(currentTreatment.startDate),
                   Text('Data de Início: ${currentTreatment.startDate}'),
                   SizedBox(height: 20),
-                  Text('Medicamento: ${currentTreatment.nameMedication}'),
+                  Text('Medicamento: ${currentTreatment.nameMedication ?? 'Não especificado'}'),
                   SizedBox(height: 20),
-                  Text('Duração: ${currentTreatment.treatmentDuration} semanas'),
+                  Text('Duração: ${currentTreatment.treatmentDuration ?? 'Indefinido'} semanas'),
                 ],
               ),
             );

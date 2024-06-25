@@ -1,6 +1,6 @@
 class Treatment {
   final int id;
-  final String? startDate;
+  final String startDate;
   final String? realEndDate;
   final String? postTreatmentStartDate;
   final int? nameMedication;
@@ -8,11 +8,10 @@ class Treatment {
   final String? endTreatmentComment;
   final int? treatmentDuration;
   final int? patientId;
-  final List<DailyMedicine> dailyMedicines;
 
   Treatment({
     required this.id,
-    this.startDate,
+    required this.startDate,
     this.realEndDate,
     this.postTreatmentStartDate,
     this.nameMedication,
@@ -20,13 +19,12 @@ class Treatment {
     this.endTreatmentComment,
     this.treatmentDuration,
     this.patientId,
-    this.dailyMedicines = const [],
   });
 
   factory Treatment.fromJson(Map<String, dynamic> json) {
     return Treatment(
-      id: json['id'],
-      startDate: json['start_date'] as String?,
+      id: json['id'] as int,
+      startDate: json['start_date'] as String? ?? '',
       realEndDate: json['real_end_date'] as String?,
       postTreatmentStartDate: json['post_treatment_start_date'] as String?,
       nameMedication: json['name_medication'] as int?,
@@ -34,14 +32,13 @@ class Treatment {
       endTreatmentComment: json['end_treatment_comments'] as String?,
       treatmentDuration: json['treatment_duration'] as int?,
       patientId: json['patient_id'] as int?,
-      dailyMedicines: (json['dailyMedicines'] as List<dynamic>?)
-          ?.map((e) => DailyMedicine.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-          [],
     );
   }
 }
 
+
+
+/*
 class DailyMedicine {
   final int id;
   final String date;
@@ -72,3 +69,5 @@ class DailyMedicine {
     );
   }
 }
+
+ */

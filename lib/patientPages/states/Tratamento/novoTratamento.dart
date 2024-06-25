@@ -15,7 +15,6 @@ class NovoTratamento extends StatefulWidget {
 class _NovoTratamentoState extends State<NovoTratamento> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime? selectedStartDate;
-  DateTime? selectedExpectedEndDate;
   int? nameMedication;
   int? treatmentDuration;
   Future<bool>? _submitFuture;
@@ -27,7 +26,6 @@ class _NovoTratamentoState extends State<NovoTratamento> {
     final patient = session.patient;
     final user = session.user;
 
-    // Ensure patient and user are not null before accessing their properties
     if (patient == null || user == null) {
       return Scaffold(
         body: Center(
@@ -147,7 +145,6 @@ class _NovoTratamentoState extends State<NovoTratamento> {
                           _submitFuture = appatiteRepo.insertNewTreatment(
                             user,
                             startDate: selectedStartDate!,
-                            expectedEndDate: selectedExpectedEndDate,
                             nameMedication: nameMedication,
                             patient: patient,
                             treatmentDuration: treatmentDuration,
@@ -196,6 +193,3 @@ class _NovoTratamentoState extends State<NovoTratamento> {
   }
 }
 
-
-//todo nome de medicmento: Maviret(3 comprimidos por dia), epclusa(1 por dia)
-//todo periodos de tratamento 8, 12, 16

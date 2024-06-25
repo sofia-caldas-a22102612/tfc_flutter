@@ -293,28 +293,25 @@ class AppatiteRepository {
     }
   }
 
+
+
   Future<bool> insertNewTreatment(
       User sessionOwner, {
         required DateTime startDate,
-        DateTime? expectedEndDate,
         int? nameMedication,
         required Patient patient,
         int? treatmentDuration,
       }) async {
-    final basicAuth =
-    _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
 
-    Map<String, dynamic> toJson() {
-      return {
-        'startDate': startDate.toIso8601String(),
-        'expectedEndDate': expectedEndDate?.toIso8601String(),
-        'nameMedication': nameMedication,
-        'patient': patient.toJson(),
-        'treatmentDuration': treatmentDuration,
-      };
-    }
+    final requestBody = {
+      'startDate': startDate.toIso8601String(),
+      'nameMedication': nameMedication,
+      'patientId': patient.getIdZeus(),
+      'treatmentDuration': treatmentDuration,
+    };
 
-    final requestBody = toJson();
+    print('Request Body: ${jsonEncode(requestBody)}'); // Add this line
 
     final http.Response response = await http.post(
       Uri.parse("$_endpoint/treatment/new"),
@@ -326,6 +323,9 @@ class AppatiteRepository {
       body: jsonEncode(requestBody),
     );
 
+    print('Response Status: ${response.statusCode}'); // Add this line
+    print('Response Body: ${response.body}'); // Add this line
+
     if (response.statusCode == 200) {
       return true;
     } else if (response.statusCode == 401) {
@@ -336,6 +336,9 @@ class AppatiteRepository {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
+
+
 
   Future<Treatment?> getCurrentTreatment(User sessionOwner, int zeusId) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
