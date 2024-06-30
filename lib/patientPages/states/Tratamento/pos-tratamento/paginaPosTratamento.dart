@@ -1,50 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tfc_flutter/model/patient.dart';
+import 'package:tfc_flutter/model/TreatmentModel/treatment.dart';
 import 'package:tfc_flutter/model/session.dart';
-import 'package:tfc_flutter/patientPages/states/testPages/novoTeste.dart';
+import 'package:tfc_flutter/repository/appatite_repository.dart';
 
-
-class PaginaPosTratamento extends StatelessWidget {
-  final Patient patient;
-
-  const PaginaPosTratamento({Key? key, required this.patient}) : super(key: key);
+class PaginaTratamento extends StatefulWidget {
+  const PaginaTratamento({Key? key}) : super(key: key);
 
   @override
+  _PaginaTratamentoState createState() => _PaginaTratamentoState();
+}
+
+class _PaginaTratamentoState extends State<PaginaTratamento> {
+  @override
   Widget build(BuildContext context) {
-
     final session = context.watch<Session>();
-    Patient? patient = session.patient;
+    final patient = session.patient;
+    final user = session.user;
 
-    return Scaffold( // Add Scaffold widget
-      appBar: AppBar( // Add AppBar
-        title: Text('Pos Tratamento'), // Set app bar title
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Text(
-              'A Aguadar Teste Diagnóstico',
-              style: TextStyle(color: Colors.black26, fontSize: 30),
-            ),
-          ),
-          Expanded(child: Container()), // Add empty container to push button to the bottom
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NovoTeste(),
+    if (patient == null || user == null) {
+      return Scaffold(
+        body: Center(
+          child: Text('No patient or user information available'),
+        ),
+      );
+    }
+
+    return Scaffold(
+      body: FutureBuilder<Treatment?>(
+        future: context.read<AppatiteRepository>().getCurrentTreatment(user, patient.getIdZeus()),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return Center(child: Text('No current treatment found'));
+          } else {
+            final currentTreatment = snapshot.data!;
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Detalhes do Tratamento',
+                    style: TextStyle(fontSize: 30),
                   ),
-                );
-              },
-              child: Text('Adicionar Teste'),
-            ),
-          ),
-        ],
+                  SizedBox(height: 40),
+                  Text('Data de Início: ${currentTreatment.startDate}'),
+                  SizedBox(height: 20),
+                  Text('Medicamento: ${currentTreatment.medicationName ?? 'Não especificado'}'),
+                  SizedBox(height: 20),
+                  Text('Duração: ${currentTreatment.treatmentDuration ?? 'Indefinido'} semanas'),
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }

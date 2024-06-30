@@ -21,6 +21,13 @@ class Treatment {
     this.patientId,
   });
 
+  static const Map<int, String> medicationNames = {
+    1: 'Maviret',
+    2: 'Epclusa',
+  };
+
+  String? get medicationName => nameMedication != null ? medicationNames[nameMedication!] : null;
+
   factory Treatment.fromJson(Map<String, dynamic> json) {
     return Treatment(
       id: json['id'] as int,
@@ -35,6 +42,7 @@ class Treatment {
     );
   }
 }
+
 
 
 

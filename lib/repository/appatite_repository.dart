@@ -361,4 +361,31 @@ class AppatiteRepository {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
+  Future<bool> addDailyMedicine(User sessionOwner, int zeusId, DateTime date, String notes, int patientId) async {
+    final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
+    final response = await http.post(
+      Uri.parse("$_endpoint/api/dailyMedicine/new"),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-token': _apiKey!,
+        'Authorization': 'Basic $basicAuth',
+      },
+      body: jsonEncode({
+        'date': date.toIso8601String(),
+        'notes': notes,
+        'patientId': zeusId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else if (response.statusCode == 404) {
+      throw NotFoundException("No treatment found for patient with ID: $zeusId");
+    } else if (response.statusCode == 401) {
+      throw AuthenticationException();
+    } else {
+      throw Exception("${response.statusCode} ${response.reasonPhrase}");
+    }
+  }
 }
