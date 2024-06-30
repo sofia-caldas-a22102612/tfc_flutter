@@ -50,7 +50,6 @@ class _PaginaTratamentoState extends State<PaginaTratamento> {
                     style: TextStyle(fontSize: 30),
                   ),
                   SizedBox(height: 40),
-                  print(currentTreatment.startDate),
                   Text('Data de Início: ${currentTreatment.startDate}'),
                   SizedBox(height: 20),
                   Text('Medicamento: ${currentTreatment.nameMedication ?? 'Não especificado'}'),

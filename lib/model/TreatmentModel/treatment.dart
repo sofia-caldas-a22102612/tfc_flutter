@@ -24,17 +24,18 @@ class Treatment {
   factory Treatment.fromJson(Map<String, dynamic> json) {
     return Treatment(
       id: json['id'] as int,
-      startDate: json['start_date'] as String? ?? '',
-      realEndDate: json['real_end_date'] as String?,
-      postTreatmentStartDate: json['post_treatment_start_date'] as String?,
-      nameMedication: json['name_medication'] as int?,
-      reasonsDropout: json['reasons_dropout'] as int?,
-      endTreatmentComment: json['end_treatment_comments'] as String?,
-      treatmentDuration: json['treatment_duration'] as int?,
-      patientId: json['patient_id'] as int?,
+      startDate: json['startDate'] as String,
+      realEndDate: json['realEndDate'] as String?,
+      postTreatmentStartDate: json['postTreatmentStartDate'] as String?,
+      nameMedication: json['nameMedication'] as int?,
+      reasonsDropout: json['reasonsDropout'] as int?,
+      endTreatmentComment: json['endTreatmentComment'] as String?,
+      treatmentDuration: json['treatmentDuration'] as int?,
+      patientId: json['patientId'] as int?,
     );
   }
 }
+
 
 
 
