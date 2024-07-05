@@ -362,7 +362,15 @@ class AppatiteRepository {
     }
   }
 
-  Future<bool> addDailyMedicine(User sessionOwner, int zeusId, DateTime date, String notes, int patientId) async {
+  Future<bool> addDailyMedicine(
+      User sessionOwner,
+      int zeusId,
+      DateTime date,
+      String notes,
+      int patientId,
+      bool tookMedicine, // New parameter
+      bool takeAtHome    // New parameter
+      ) async {
     final basicAuth = _buildBasicAuth(sessionOwner.userid, sessionOwner.password);
     final response = await http.post(
       Uri.parse("$_endpoint/api/dailyMedicine/new"),
@@ -375,6 +383,8 @@ class AppatiteRepository {
         'date': date.toIso8601String(),
         'notes': notes,
         'patientId': zeusId,
+        'tookMedicine': tookMedicine, // Added field
+        'takeAtHome': takeAtHome      // Added field
       }),
     );
 
@@ -388,4 +398,6 @@ class AppatiteRepository {
       throw Exception("${response.statusCode} ${response.reasonPhrase}");
     }
   }
+
+
 }
