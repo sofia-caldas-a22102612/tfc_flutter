@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head (pageTitle='New Expense')}">
+</head>
+<body>
+<div th:replace="~{layout/layout :: header}"></div>
+
+<!--/*@thymesVar id="userForm" type="pt.ulusofona.appAtiteC.form.UserForm"*/-->
+<div class="container">
+    <h1>Registration</h1>
+
+    <div class="col-md-6">
+        <form class="needs-validation" novalidate="" th:action="@{/web/user/new}" th:object="${userForm}" method="post">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="firstName" class="form-label">First name</label>
+                    <div class="input-group has-validation">
+                        <input th:field="*{firstName}" type="text" class="form-control" id="firstName" th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{firstName}">Error</div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="email" class="form-label">Email</label>
+                    <div class="input-group has-validation">
+                        <input th:field="*{email}" type="text" class="form-control" id="email" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group has-validation">
+                        <input th:field="*{password}" type="password" class="form-control" id="password" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <button class="w-100 btn btn-primary btn-lg" type="submit">Submit</button>
+        </form>
+    </div>
+
+</div>
+
+<div th:replace="~{layout/layout :: footer}"></div>
+</body>
+</html>

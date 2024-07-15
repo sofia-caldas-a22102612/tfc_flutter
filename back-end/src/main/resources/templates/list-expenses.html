@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head (pageTitle='Expense Types')}">
+</head>
+<body>
+<div th:replace="~{layout/layout :: header}"></div>
+
+<!--/*@thymesVar id="expenses" type="java.util.ArrayList<pt.ulusofona.appAtiteC.dao.Expense>"*/-->
+
+<div class="container">
+    <h1>Expenses</h1>
+
+    <div th:if="${expenses.isEmpty()}">
+        No expenses yet...
+    </div>
+
+    <table class="table" th:if="${!expenses.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Ammount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="expense : ${expenses}">
+            <td th:text="${expense.title}"></td>
+            <td th:text="${expense.expenseType.name}"></td>
+            <td th:text="${expense.amount}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div th:replace="~{layout/layout :: footer}"></div>
+</body>
+</html>

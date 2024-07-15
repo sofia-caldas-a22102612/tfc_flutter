@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head (pageTitle='New Expense')}">
+</head>
+<body>
+<div th:replace="~{layout/layout :: header}"></div>
+
+<div class="container">
+    <h1>Login</h1>
+
+    <div class="col-md-6">
+        <form class="needs-validation" th:action="@{/login}" method="post">
+            <div class="row g-3">
+                <div th:if="${message}" class="alert alert-info" th:text="${message}">
+                </div>
+                <div th:if="${param.error}" class="alert alert-danger">
+                    Invalid credentials
+                </div>
+                <div th:if="${param.logout}" class="alert alert-success">
+                    You have been logged out
+                </div>
+                <div class="col-12">
+                    <label for="username" class="form-label">Email</label>
+                    <div class="input-group has-validation">
+                        <input name="username" type="text" class="form-control" id="username">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group has-validation">
+                        <input name="password" type="password" class="form-control" id="password">
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <button class="w-100 btn btn-primary btn-lg" type="submit">Sign in</button>
+            <div class="text-center">
+                <p>Don't have an account? <a th:href="@{/web/user/new}">Signup</a></p>
+                <p>Forgot password? <a th:href="@{/web/user/resetPassword}">Reset password</a></p>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<div th:replace="~{layout/layout :: footer}"></div>
+</body>
+</html>

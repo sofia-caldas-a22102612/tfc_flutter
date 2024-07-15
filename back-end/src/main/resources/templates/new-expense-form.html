@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head (pageTitle='New Expense')}">
+</head>
+<body>
+<div th:replace="~{layout/layout :: header}"></div>
+
+<!--/*@thymesVar id="expenseForm" type="pt.ulusofona.appAtiteC.form.ExpenseForm"*/-->
+<!--/*@thymesVar id="expenseTypes" type="java.util.List<pt.ulusofona.appAtiteC.dao.ExpenseType>"*/-->
+<div class="container">
+    <h1>New Expense</h1>
+
+    <div class="col-md-6">
+        <form class="needs-validation" novalidate="" th:action="@{/web/expense/new}" th:object="${expenseForm}" method="post">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="title" class="form-label">Title</label>
+                    <div class="input-group has-validation">
+                        <input th:field="*{title}" type="text" class="form-control" id="title" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <label for="type" class="form-label">Type</label>
+                    <select th:field="*{type}" class="form-select" id="type" th:classappend="${#fields.hasErrors('type')} ? 'is-invalid' : ''" aria-describedby="typeFeedback">
+                        <option value="">Choose...</option>
+                        <option th:each="option : ${expenseTypes}" th:value="${option.id}" th:text="${option.name}"></option>
+                    </select>
+                    <div id="typeFeedback" class="invalid-feedback">
+                        Please select a valid type.
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="amount" class="form-label">Amount</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text" id="inputGroupPrepend">€</span>
+                        <input th:field="*{amount}" type="text" class="form-control" id="amount" th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{amount}">Error</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <button class="w-100 btn btn-primary btn-lg" type="submit">Save</button>
+        </form>
+    </div>
+
+</div>
+
+<div th:replace="~{layout/layout :: footer}"></div>
+</body>
+</html>

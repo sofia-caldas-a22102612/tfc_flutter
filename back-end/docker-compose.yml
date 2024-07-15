@@ -1,0 +1,38 @@
+version: '3.5'
+
+services:
+  db:
+    image: mysql:8.0.35
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: s3cret
+      MYSQL_DATABASE: appatitec
+      MYSQL_USER: appatitec
+      MYSQL_PASSWORD: appatitec123
+    volumes:
+      - ./db:/var/lib/mysql
+
+  server:
+    image: pedroalv3s/appatitec-api
+    restart: "on-failure"
+    environment:
+      DB_URL: jdbc:mysql://db:3306/appatitec?connectTimeout=0&socketTimeout=0&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: appatitec
+      DB_PASSWORD: appatitec123
+    #      SERVER_SERVLET_CONTEXT_PATH: /appatitec
+    ports:
+      - "8080:8080"
+    links:
+      - db
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+#      PMA_ABSOLUTE_URI: https://labs.deisi.ulusofona.pt/appatitecdb/
+      MYSQL_ROOT_PASSWORD: s3cret
+    ports:
+      - "8081:80"

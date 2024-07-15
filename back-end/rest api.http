@@ -1,0 +1,66 @@
+### api/patient/search/Patient One
+GET {{host}}/api/patient/search/Patient One
+x-api-token: 12345
+Authorization: Basic admin 123
+
+
+### api/tests/patient/idZeus
+GET {{host}}/api/tests/patient/4
+x-api-token: 12345
+Authorization: Basic admin 123
+
+### api/tests/all
+GET {{host}}/api/tests/all
+x-api-token: 12345
+Authorization: Basic admin 123
+
+### api/patient/list
+GET {{host}}/api/patient/list
+x-api-token: 12345
+Authorization: Basic admin 123
+
+### api/patient/activeTreatment
+GET {{host}}/api/patient/activeTreatment
+x-api-token: 12345
+Authorization: Basic user password
+
+### api/patient/currentStatus
+GET {{host}}/api/patient/currentStatus?zeusId=6981
+x-api-token: 12345
+Authorization: Basic user password
+
+### /api/tests/new
+POST {{host}}/api/tests/new
+Content-Type: application/json
+x-api-token: 12345
+Authorization: Basic admin 123
+
+{
+    "type": 1,
+    "result": false,
+    "resultDate": "2024-04-01T10:00:00",
+    "testLocation": 1,
+    "testDate": "2024-04-01T10:00:00",
+    "patient": {
+        "idZeus": 234,
+        "name": "Maria",
+        "birthDate": "1980-04-01T10:00:00",
+        "gender": "feminino"
+    }
+}
+
+
+### /api/tests/new
+POST {{host}}/api/tests/new
+Content-Type: application/json
+
+{
+"type": 1,
+"result": true,
+"resultDate": "2024-04-01T10:00:00",
+"testLocation": 1,
+"testDate": "2024-04-01T10:00:00",
+"idZeus": 234
+}
+
+

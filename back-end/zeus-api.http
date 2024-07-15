@@ -1,0 +1,47 @@
+GET http://85.242.85.170:5000/api/search?nome=alexander
+Accept: application/json
+Authorization: Basic user password
+
+"message": {
+        "utentes": [
+            {
+                "utente_cc": "XEK2DF71Z",
+                "utente_data_nascimento": "Tue, 01 Jan 1985 00:00:00 GMT",
+                "utente_genero": 1,
+                "utente_id": 6981,
+                "utente_nome": "Miles Braun"
+            },
+            {
+                "utente_cc": "XEK2DF71Z",
+                "utente_data_nascimento": "Wed, 09 Jul 1969 00:00:00 GMT",
+                "utente_genero": 2,
+                "utente_id": 8808,
+                "utente_nome": "Miles Braun"
+            }
+        ]
+   }
+}
+
+###
+
+
+###
+#6981
+#220210
+#220235
+#18083
+#220239
+#21025
+#220249
+#220255
+#220262
+#220267
+#220274
+#220276
+#220284
+#220293
+#220295
+
+GET http://85.242.85.170:5000/api/search?id=6981
+Accept: application/json
+Authorization: Basic user password
